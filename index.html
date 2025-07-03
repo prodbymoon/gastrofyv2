@@ -6,747 +6,687 @@
     <title>Gastrofy v2.0.5</title>
     
     <style>
+        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        :root {
+            --primary-color: #10b981; /* Emerald 500 */
+            --primary-color-dark: #059669; /* Emerald 600 */
+            --primary-color-darker: #047857; /* Emerald 700 */
+            --primary-color-light: #d1fae5; /* Emerald 100 */
+            --primary-color-lighter: #f0fdf4; /* Emerald 50 */
+
+            --secondary-color: #3b82f6; /* Blue 500 */
+            --secondary-color-dark: #2563eb; /* Blue 600 */
+            --secondary-color-light: #dbeafe; /* Blue 100 */
+            --secondary-color-lighter: #eff6ff; /* Blue 50 */
+
+            --warning-color: #f59e0b; /* Amber 500 */
+            --warning-color-dark: #d97706; /* Amber 600 */
+
+            --danger-color: #ef4444; /* Red 500 */
+            --danger-color-dark: #dc2626; /* Red 600 */
+            --danger-color-light: #fecaca; /* Red 200 */
+            --danger-color-lighter: #fef2f2; /* Red 50 */
+
+            --text-primary: #1f2937; /* Gray 800 */
+            --text-secondary: #4b5563; /* Gray 600 */
+            --text-muted: #6b7280; /* Gray 500 */
+            --text-on-primary: white;
+            --text-on-danger: white;
+
+            --border-color: #d1d5db; /* Gray 300 */
+            --border-color-light: #e5e7eb; /* Gray 200 */
+
+            --background-light: white;
+            --background-page: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 50%, var(--primary-color-darker) 100%);
+            --background-card: var(--background-light);
+            --background-input: var(--primary-color-lighter);
+
+            --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+            --border-radius-small: 8px;
+            --border-radius-medium: 12px;
+            --border-radius-large: 16px;
+            --border-radius-xl: 24px; /* Formerly 28px, slightly reduced for more standard look */
+            --border-radius-circle: 50%;
+
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            font-family: var(--font-family-sans);
+            background: var(--background-page);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
-            height: 100vh;
+            height: 100vh; /* Fix for vh issues on mobile, though it's an Electron app */
             max-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Login Screen */
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--primary-color-lighter);
+            border-radius: var(--border-radius-small);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color-light);
+            border-radius: var(--border-radius-small);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* General Container Styles */
+        .login-container,
+        .admin-container,
+        .modal {
+            background: var(--background-light);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: 2.5rem; /* Base padding, can be overridden */
+        }
+
         .login-container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            padding: 3rem;
             text-align: center;
-            min-width: 420px;
-            max-width: 500px;
-            backdrop-filter: blur(20px);
+            min-width: 450px; /* Slightly wider */
+            max-width: 520px;
+            padding: 3rem;
         }
 
+        .admin-container {
+            min-width: 700px; /* Slightly wider */
+            max-width: 900px;
+        }
+
+        .modal {
+            padding: 2rem; /* Modals can be a bit more compact */
+            max-width: 650px;
+        }
+
+        /* Typography */
         .login-title {
-            font-size: 3rem;
+            font-size: 3.5rem; /* Larger icon */
             font-weight: bold;
-            background: linear-gradient(135deg, #10b981, #047857);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-darker));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .login-subtitle {
-            font-size: 1.3rem;
-            color: #374151;
-            margin-bottom: 3rem;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 2.5rem;
             font-weight: 600;
         }
 
-        .pin-input {
-            width: 100%;
-            padding: 1.5rem;
-            font-size: 2rem;
-            text-align: center;
-            border: 3px solid #d1fae5;
-            border-radius: 20px;
-            margin-bottom: 1.5rem;
-            letter-spacing: 0.5rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            background: #f0fdf4;
+        .admin-title, .modal-title {
+            font-size: 1.75rem;
+            font-weight: 700; /* Bold */
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-darker));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0; /* Handled by header */
         }
 
-        .pin-input:focus {
-            outline: none;
-            border-color: #10b981;
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
-            background: white;
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-        }
-
-        .login-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
-        }
-
-        .admin-button {
-            width: 100%;
-            padding: 1rem;
-            background: #f0fdf4;
-            color: #047857;
-            border: 2px solid #d1fae5;
-            border-radius: 15px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .card-title {
+            font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 1rem;
+            color: var(--primary-color-darker);
         }
 
-        .admin-button:hover {
-            background: #dcfce7;
-            border-color: #10b981;
-            transform: translateY(-1px);
+        .label { /* Form label */
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color-darker);
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
         }
 
         .made-by {
             font-size: 0.9rem;
-            color: #6b7280;
+            color: var(--text-muted);
             font-style: italic;
-            margin-top: 0.5rem;
+            margin-top: 1rem;
         }
 
-        .error-message {
-            background: #fef2f2;
-            color: #dc2626;
-            padding: 1rem;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            font-weight: bold;
-            border: 2px solid #fecaca;
-        }
-
-        /* Admin Panel */
-        .admin-container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            padding: 2.5rem;
-            min-width: 650px;
-            max-width: 850px;
-        }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #d1fae5;
-        }
-
-        .admin-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #10b981, #047857);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .back-button {
+        /* Buttons */
+        .button-base { /* New base class for common button styles */
             padding: 0.75rem 1.5rem;
-            background: #f0fdf4;
-            color: #047857;
-            border: 2px solid #d1fae5;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: #dcfce7;
-            border-color: #10b981;
-            transform: translateY(-1px);
-        }
-
-        .user-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .user-card {
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border: 2px solid #d1fae5;
-            border-radius: 20px;
-            padding: 1.5rem;
-            text-align: center;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .user-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2);
-            border-color: #10b981;
-        }
-
-        .user-pin {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #047857;
-            margin-bottom: 0.5rem;
-            font-family: 'Courier New', monospace;
-        }
-
-        .user-info {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .delete-button {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: #ef4444;
-            color: white;
             border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none; /* For anchor tags styled as buttons */
         }
 
-        .delete-button:hover {
-            background: #dc2626;
-            transform: scale(1.1);
+        .button-base:focus-visible { /* Modern focus indicator */
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-color-light), var(--shadow-md);
         }
 
-        .add-user-section {
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border: 2px dashed #10b981;
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
+        .button-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+            color: var(--text-on-primary);
+            box-shadow: var(--shadow-sm);
+        }
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color-darker));
         }
 
-        .add-user-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #047857;
+        .button-secondary {
+            background: var(--primary-color-lighter);
+            color: var(--primary-color-darker);
+            border: 2px solid var(--primary-color-light);
+            box-shadow: var(--shadow-sm);
+        }
+        .button-secondary:hover {
+            background: var(--primary-color-light);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        .button-secondary:focus-visible {
+             box-shadow: 0 0 0 3px var(--primary-color-light), var(--shadow-md);
+        }
+
+        .button-danger {
+            background: linear-gradient(135deg, var(--danger-color), var(--danger-color-dark));
+            color: var(--text-on-danger);
+            box-shadow: var(--shadow-sm);
+        }
+        .button-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(135deg, var(--danger-color-dark), #b91c1c); /* Red 700 */
+        }
+        .button-danger:focus-visible {
+             box-shadow: 0 0 0 3px var(--danger-color-light), var(--shadow-md);
+        }
+
+        /* Specific Button Instances - Applying base and variant styles */
+        .login-button { /* Extends button-base, button-primary */
+            width: 100%;
+            padding: 1.25rem; /* Larger for login */
+            font-size: 1.2rem;
             margin-bottom: 1.5rem;
         }
 
-        .add-user-input {
-            width: 120px;
+        .admin-button { /* Extends button-base, button-secondary */
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .back-button, .close-button { /* Extends button-base, button-secondary */
+            padding: 0.6rem 1.2rem; /* Slightly smaller */
+        }
+
+        .add-user-button { /* Extends button-base, button-primary */
+             padding: 0.8rem 1.8rem;
+        }
+
+        .delete-button { /* Small, circular delete button */
+            background: var(--danger-color);
+            color: var(--text-on-danger);
+            border: none;
+            border-radius: var(--border-radius-circle);
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute; /* Keep as is for card positioning */
+            top: 0.75rem;
+            right: 0.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .delete-button:hover {
+            background: var(--danger-color-dark);
+            transform: scale(1.1);
+            box-shadow: var(--shadow-md);
+        }
+        .delete-button:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--danger-color-light);
+        }
+
+        .btn-small { /* Extends button-base */
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        .btn-edit { /* Extends button-secondary */
+            background: var(--primary-color-lighter);
+            color: var(--primary-color-darker);
+            border: 2px solid var(--primary-color-light);
+        }
+        .btn-edit:hover {
+            background: var(--primary-color-light);
+            border-color: var(--primary-color);
+        }
+        .btn-delete { /* Extends button-secondary, but with danger colors */
+            background: var(--danger-color-lighter);
+            color: var(--danger-color-dark);
+            border-color: var(--danger-color-light);
+        }
+        .btn-delete:hover {
+            background: var(--danger-color-light);
+            border-color: var(--danger-color);
+        }
+
+        .backup-button { /* Extends button-base, button-primary (for create) or custom (for restore) */
+            padding: 0.8rem 1.8rem;
+        }
+        .backup-button.restore {
+            background: linear-gradient(135deg, var(--warning-color), var(--warning-color-dark));
+        }
+        .backup-button.restore:hover {
+            background: linear-gradient(135deg, var(--warning-color-dark), #a16207); /* Amber 700 */
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .logout-button { /* Extends button-base, button-danger */
+            padding: 0.6rem 1.2rem;
+        }
+
+        .product-admin-button { /* Extends button-base, button-primary */
+             padding: 0.6rem 1.2rem;
+        }
+
+        .category-button { /* Extends button-base, button-primary */
+            width: 100%;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
             padding: 1rem;
-            font-size: 1.3rem;
+        }
+
+        .quantity-button { /* Extends button-base, button-secondary */
+            padding: 0.75rem;
+            font-size: 1.2rem;
+            width: 44px; /* Fixed width for square-ish look */
+            height: 44px;
+        }
+
+        .print-button { /* Extends button-base */
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+        .print-button.enabled { /* Extends button-primary */
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+            color: var(--text-on-primary);
+        }
+        .print-button.disabled {
+            background: var(--border-color-light);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Inputs and Form Elements */
+        .input,
+        .pin-input,
+        .add-user-input,
+        select.input /* Targeting select specifically if it has .input class */
+        {
+            width: 100%;
+            padding: 0.9rem 1rem; /* Consistent padding */
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-medium);
+            background: var(--background-light); /* White background */
+            transition: all 0.2s ease-in-out;
+            color: var(--text-primary);
+        }
+        .input:focus,
+        .pin-input:focus,
+        .add-user-input:focus,
+        select.input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-color-light);
+            background: var(--background-light);
+        }
+
+        .pin-input {
+            padding: 1.25rem; /* Larger for PIN */
+            font-size: 1.8rem;
             text-align: center;
-            border: 2px solid #10b981;
-            border-radius: 15px;
-            margin-right: 1rem;
+            letter-spacing: 0.5rem;
+            font-weight: bold;
+            background: var(--background-input); /* Light green background */
+        }
+        .pin-input:focus {
+            background: var(--background-light); /* White on focus */
+        }
+
+        .add-user-input { /* For PIN and Shortcode in admin */
+            width: 130px; /* Slightly wider */
+            text-align: center;
             letter-spacing: 0.3rem;
             font-weight: bold;
-            background: white;
-            transition: all 0.3s ease;
+            margin-right: 0; /* Remove specific margin, handle with gap in flex */
         }
 
-        .add-user-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        .input-small { /* If still needed, can be a modifier class */
+            width: 100px; /* Or use flex-basis for better layout control */
+            padding: 0.7rem 0.8rem;
+            font-size: 0.9rem;
         }
 
-        .add-user-button {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .add-user-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-        }
-
-        /* Product Admin Panel */
-        .product-admin-container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            padding: 2.5rem;
-            min-width: 900px;
-            max-width: 1200px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .admin-tabs {
-            display: flex;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #d1fae5;
-        }
-
-        .admin-tab {
-            padding: 1rem 2rem;
-            background: #f0fdf4;
-            color: #047857;
-            border: 2px solid #d1fae5;
-            border-bottom: none;
-            border-radius: 15px 15px 0 0;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .admin-tab.active {
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
-            border-color: #10b981;
-        }
-
-        .admin-tab:hover:not(.active) {
-            background: #dcfce7;
-            border-color: #10b981;
-        }
-
-        .tab-content {
+        .file-input { /* Keep hidden */
             display: none;
         }
 
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Scrollbares Admin-Produkts-Tab */
-        #adminProductsTab {
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        #adminProductsTab .tab-content {
-            display: block; /* Immer sichtbar innerhalb des Admin-Produkts-Tabs */
-        }
-
-        #adminProductsTab .tab-content.active {
-            display: block;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .category-card {
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border: 2px solid #d1fae5;
-            border-radius: 20px;
+        /* Cards */
+        .user-card,
+        .category-card,
+        .card /* Main app card */
+        {
+            background: var(--background-card);
+            border: 1px solid var(--border-color-light); /* Softer border */
+            border-radius: var(--border-radius-large); /* Larger radius */
             padding: 1.5rem;
-            position: relative;
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md); /* Softer shadow */
+            transition: all 0.2s ease-in-out;
+            position: relative; /* For absolute positioned children like delete button */
+        }
+        .user-card:hover,
+        .category-card:hover,
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color-light);
         }
 
-        .category-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-            border-color: #10b981;
+        .user-pin {
+            font-size: 1.6rem; /* Slightly larger */
+            font-weight: bold;
+            color: var(--primary-color-dark);
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace; /* Keep monospace for PINs */
+        }
+
+        .user-info { /* Text in user card */
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
 
         .category-name {
             font-size: 1.3rem;
-            font-weight: bold;
-            color: #047857;
-            margin-bottom: 1rem;
+            font-weight: 600; /* Semi-bold */
+            color: var(--primary-color-darker);
+            margin-bottom: 0.75rem;
         }
 
         .product-count {
-            color: #6b7280;
+            color: var(--text-muted);
             font-size: 0.9rem;
             margin-bottom: 1rem;
-        }
-
-        .category-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .btn-small {
-            padding: 0.5rem 1rem;
-            border: 2px solid #d1fae5;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .btn-edit {
-            background: #f0fdf4;
-            color: #047857;
-        }
-
-        .btn-edit:hover {
-            background: #dcfce7;
-            border-color: #10b981;
-        }
-
-        .btn-delete {
-            background: #fef2f2;
-            color: #dc2626;
-            border-color: #fecaca;
-        }
-
-        .btn-delete:hover {
-            background: #fee2e2;
-            border-color: #ef4444;
         }
 
         .product-mini-list {
             font-size: 0.85rem;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
-
         .product-mini-item {
-            padding: 0.25rem 0;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        .product-mini-item:last-child {
+            border-bottom: none;
         }
 
-        .add-category-section {
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border: 2px dashed #10b981;
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 1rem;
-            align-items: end;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group-inline {
-            display: flex;
-            flex-direction: column;
-            min-width: 150px;
-        }
-
-        .label {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-            color: #047857;
-        }
-
-        .input {
-            width: 100%;
-            padding: 0.8rem;
-            font-size: 1rem;
-            border: 2px solid #d1fae5;
-            border-radius: 12px;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .input:focus {
-            outline: none;
-            border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
-        }
-
-        .input-small {
-            width: 100px;
-            padding: 0.6rem;
-            font-size: 0.9rem;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-overlay.hidden {
-            display: none;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-        }
-
-        .modal-header {
+        /* Admin Panel Specifics */
+        .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #d1fae5;
+            margin-bottom: 2rem; /* More space */
+            padding-bottom: 1.5rem; /* More space */
+            border-bottom: 1px solid var(--border-color-light); /* Softer border */
         }
 
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #047857;
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 2rem; /* More space */
+            border-bottom: 1px solid var(--border-color-light);
         }
-
-        .close-button {
-            background: #f0fdf4;
-            color: #047857;
-            border: 2px solid #d1fae5;
-            border-radius: 10px;
-            padding: 0.5rem 1rem;
+        .admin-tab {
+            padding: 0.9rem 1.75rem; /* Adjusted padding */
+            background: transparent; /* Inactive tabs cleaner */
+            color: var(--text-secondary);
+            border: none; /* Remove border for inactive */
+            border-bottom: 3px solid transparent; /* Space for active indicator */
+            border-radius: 0; /* Remove radius for tab style */
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            transition: all 0.2s ease;
+            position: relative;
+            top: 1px; /* Align with bottom border of .admin-tabs */
+        }
+        .admin-tab.active {
+            color: var(--primary-color-dark);
+            border-bottom-color: var(--primary-color-dark);
+            background: var(--primary-color-lighter); /* Slight background for active tab */
+            border-top-left-radius: var(--border-radius-medium); /* Rounded top corners for active tab */
+            border-top-right-radius: var(--border-radius-medium);
+        }
+        .admin-tab:hover:not(.active) {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color-light);
         }
 
-        .close-button:hover {
-            background: #dcfce7;
-            border-color: #10b981;
+        .tab-content {
+            display: none;
+            padding-top: 1rem; /* Add some space above tab content */
+        }
+        .tab-content.active {
+            display: block;
         }
 
-        .product-list {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        .product-item-admin {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border: 2px solid #d1fae5;
-            border-radius: 12px;
-            margin-bottom: 0.5rem;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .product-item-admin:hover {
-            border-color: #10b981;
-            background: #f0fdf4;
-        }
-
-        .product-details {
-            flex: 1;
-        }
-
-        .product-name-admin {
-            font-weight: bold;
-            color: #047857;
-            margin-bottom: 0.25rem;
-        }
-
-        .product-specs {
-            font-size: 0.85rem;
-            color: #6b7280;
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .product-editor-list {
-            max-height: 60vh;
-            overflow-y: auto;
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Slightly larger minmax */
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .product-editor-item {
-            background: white;
-            border: 2px solid #d1fae5;
-            border-radius: 15px;
+        .add-user-section, .add-category-section { /* Common styling for "add" sections */
+            background: linear-gradient(135deg, var(--primary-color-lighter), #e0f2fe); /* Lighter gradient, to blueish */
+            border: 2px dashed var(--primary-color-light);
+            border-radius: var(--border-radius-large);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 1.5rem; /* Add some space if it's after a grid */
+        }
+        .add-user-title { /* Title within these sections */
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color-darker);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Product Admin Panel (within adminPanel) */
+        #adminProductsTab { /* Container for both category overview and product editor */
+            max-height: 70vh; /* Keep scroll behavior */
+            overflow-y: auto;
+        }
+        .category-grid { /* Grid for category cards */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .category-actions { /* Container for edit/delete buttons on category card */
+            display: flex;
+            gap: 0.75rem; /* More space */
+            margin-bottom: 1rem;
+        }
+
+        /* Product Editor View */
+        #productEditorViewTab .category-header { /* Header in product editor */
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+        #productEditorViewTab .category-header .category-title {
+            font-size: 1.4rem; /* Make it more prominent */
+            color: var(--text-primary);
+            margin-bottom: 0;
+        }
+        .product-editor-list {
+            max-height: calc(65vh - 150px); /* Adjust based on surrounding elements */
+            overflow-y: auto;
+            margin-bottom: 2rem;
+            padding-right: 0.5rem; /* For scrollbar */
+        }
+        .product-editor-item { /* Card for each product in editor */
+            background: var(--background-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-large);
             padding: 1.5rem;
             margin-bottom: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
-
         .product-editor-item:hover {
-            border-color: #10b981;
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
         }
-
-        .product-editor-form {
-            width: 100%;
-        }
-
-        .product-editor-form .form-row {
+        .product-editor-form .form-row { /* For aligning inputs in product editor */
             display: flex;
             gap: 1rem;
-            align-items: end;
+            align-items: flex-end; /* Align labels top, inputs bottom */
             flex-wrap: wrap;
+            margin-bottom: 1rem;
         }
-
+        .product-editor-form .form-row:last-child {
+            margin-bottom: 0;
+        }
         .product-editor-form .form-group-inline {
+            display: flex;
+            flex-direction: column;
             min-width: 120px;
-            flex: 1;
+            flex: 1; /* Allow flexible growth */
+        }
+        .product-editor-form .form-group-inline:last-child { /* For action buttons */
+            flex: 0 0 auto; /* Don't grow button group */
+        }
+        /* Specific button styles for product editor to override defaults if needed */
+        .save-product-btn { /* Extends button-base, button-secondary */
+            /* Styles already inherited, or can be more specific here */
+        }
+        .delete-product-btn { /* Extends button-base, btn-delete */
+             /* Styles already inherited */
         }
 
-        .product-editor-form .form-group-inline:last-child {
-            flex: 0 0 auto;
-        }
-
-        .save-product-btn {
-            background: #f0fdf4 !important;
-            color: #047857 !important;
-            border-color: #d1fae5 !important;
-        }
-
-        .save-product-btn:hover {
-            background: #dcfce7 !important;
-            border-color: #10b981 !important;
-        }
-
-        .delete-product-btn {
-            background: #fef2f2 !important;
-            color: #dc2626 !important;
-            border-color: #fecaca !important;
-        }
-
-        .delete-product-btn:hover {
-            background: #fee2e2 !important;
-            border-color: #ef4444 !important;
-        }
-
-        /* Backup Section Styles */
-        .backup-section {
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
-            border: 2px solid #3b82f6;
-            border-radius: 20px;
-            padding: 2rem;
+        /* Backup Section (within its tab) */
+        .backup-section { /* Styles when it's inside a tab */
+            background: none; /* Remove distinct background if it's inside a tab content */
+            border: none;
+            padding: 1rem 0; /* Adjust padding */
+            margin-bottom: 0;
             text-align: center;
-            margin-bottom: 2rem;
         }
-
         .backup-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #1e40af;
+            font-size: 1.5rem; /* Consistent with other tab titles */
+            font-weight: 600;
+            color: var(--primary-color-darker); /* Or text-primary */
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
         }
-
         .backup-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem; /* More space */
         }
-
-        .backup-button {
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        .backup-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-        }
-
-        .backup-button.restore {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .backup-button.restore:hover {
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-        }
-
         .backup-info {
             font-size: 0.9rem;
-            color: #374151;
-            margin-top: 1rem;
+            color: var(--text-secondary);
+            margin-top: 1.5rem;
             line-height: 1.5;
         }
 
-        .file-input {
-            display: none;
-        }
-
-        .backup-status {
-            margin-top: 1rem;
+        /* Status Messages */
+        .error-message, .backup-status {
             padding: 1rem;
-            border-radius: 10px;
-            font-weight: bold;
-            display: none;
+            border-radius: var(--border-radius-medium);
+            margin-bottom: 1rem;
+            font-weight: 500; /* Medium weight */
+            border: 1px solid transparent;
         }
-
+        .error-message {
+            background: var(--danger-color-lighter);
+            color: var(--danger-color-dark);
+            border-color: var(--danger-color-light);
+        }
         .backup-status.success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 2px solid #10b981;
+            background: var(--primary-color-lighter);
+            color: var(--primary-color-darker);
+            border-color: var(--primary-color-light);
+        }
+        .backup-status.error { /* Consistent with .error-message */
+            background: var(--danger-color-lighter);
+            color: var(--danger-color-dark);
+            border-color: var(--danger-color-light);
         }
 
-        .backup-status.error {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 2px solid #ef4444;
-        }
-
-        /* Main App */
+        /* Main App Styles */
         .app-container {
-            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            background: var(--background-page); /* Consistent with body */
             height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            padding: 0.5rem;
+            padding: 1rem; /* Add some padding around the app */
         }
-        
-        .container {
-            max-width: 1200px;
+        .container { /* Main content wrapper in app */
+            max-width: 1280px; /* Wider for desktop */
             width: 100%;
             height: 100%;
             margin: 0 auto;
@@ -754,337 +694,159 @@
             flex-direction: column;
             overflow: hidden;
         }
-        
-        .title {
-            font-size: 1.8rem;
-            font-weight: bold;
+        .title { /* Main app title "Gastrofy" */
+            font-size: 2rem; /* Larger */
+            font-weight: 700;
             text-align: center;
-            margin-bottom: 0.75rem;
-            background: linear-gradient(135deg, #10b981, #047857);
+            margin-bottom: 1rem; /* More space */
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-darker));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .user-info-bar {
-            background: white;
-            border-radius: 20px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
+            background: var(--background-light);
+            border-radius: var(--border-radius-large);
+            padding: 0.75rem 1.5rem; /* Adjusted padding */
+            margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
-            border: 2px solid #d1fae5;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color-light);
             flex-shrink: 0;
         }
-
         .current-user {
-            font-weight: bold;
-            color: #047857;
-            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color-darker);
+            font-size: 1.05rem; /* Slightly larger */
         }
-
-        .logout-button {
-            padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .logout-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
-        }
-
-        .product-admin-button {
-            padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin-right: 1rem;
-        }
-
-        .product-admin-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
-        }
-        
-        .grid {
+        .grid { /* For the two main cards in app */
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
+            grid-template-columns: 1fr; /* Default for smaller viewports */
+            gap: 1.5rem; /* More space */
             flex: 1;
             overflow: hidden;
             height: 100%;
         }
-        
-        @media (min-width: 768px) {
+        @media (min-width: 800px) { /* Adjust breakpoint if needed */
             .grid {
                 grid-template-columns: 1fr 1fr;
             }
         }
-        
-        .card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.1);
-            padding: 1.5rem;
-            border: 2px solid #d1fae5;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            color: #047857;
-            flex-shrink: 0;
-        }
-        
-        .scroll-area {
+        .scroll-area { /* For product list and category list */
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-right: 0.5rem;
-            min-height: 0;
+            padding-right: 0.75rem; /* Space for scrollbar */
+            min-height: 0; /* Fix for flexbox overflow */
         }
-        
-        .category-button {
-            width: 100%;
-            font-size: 1.1rem;
+        .category-title { /* In main app product view */
+            font-size: 1.3rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
-            padding: 1rem;
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+            color: var(--primary-color-darker);
         }
-        
-        .category-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-        }
-        
-        .category-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #047857;
-        }
-        
-        .product-list {
-            display: none;
+        .product-list { /* Container for products in a category */
+            /* display: none; by default handled by JS */
             margin-bottom: 0.75rem;
         }
-        
         .product-list.active {
             display: block;
         }
-        
-        .category-header {
+        .category-header { /* In main app, for back button and category title */
             display: flex;
             align-items: center;
             margin-bottom: 1rem;
             gap: 0.75rem;
         }
-        
-        .back-to-categories {
-            padding: 0.5rem 1rem;
-            background: #f0fdf4;
-            color: #047857;
-            border: 2px solid #d1fae5;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .back-to-categories { /* Extends button-base, button-secondary */
+            padding: 0.5rem 1rem; /* Smaller */
         }
-        
-        .back-to-categories:hover {
-            background: #dcfce7;
-            border-color: #10b981;
-            transform: translateX(-2px);
-        }
-        
-        .category-view {
-            display: block;
-        }
-        
-        .products-view {
-            display: none;
-        }
-        
-        .product-item {
+        .product-item { /* Product buttons in main app */
             width: 100%;
             text-align: left;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            border: 2px solid #d1fae5;
-            border-radius: 12px;
-            background: white;
+            padding: 1rem 1.25rem; /* More padding */
+            margin-bottom: 0.6rem; /* Slightly more space */
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-medium);
+            background: var(--background-light);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease-in-out;
+            box-shadow: var(--shadow-sm);
         }
-        
         .product-item:hover {
-            border-color: #10b981;
-            background-color: #f0fdf4;
+            border-color: var(--primary-color);
+            background-color: var(--primary-color-lighter);
             transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
-        
         .product-item.selected {
-            border-color: #10b981;
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+            border-color: var(--primary-color-dark);
+            background: linear-gradient(135deg, var(--primary-color-lighter), var(--primary-color-light));
+            box-shadow: 0 0 0 2px var(--primary-color-dark), var(--shadow-md); /* Clearer selection */
         }
-        
         .product-name {
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 0.25rem;
-            color: #047857;
+            color: var(--primary-color-darker);
         }
-        
         .product-info {
             font-size: 0.8rem;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
-        
-        .product-info .haltbar {
-            color: #10b981;
+        .product-info .haltbar { /* "Haltbar" text */
+            color: var(--primary-color-dark); /* More emphasis */
             font-weight: 700;
         }
-        
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem; /* Slightly less gap */
         }
-        
-        .quantity-button {
-            padding: 0.75rem;
-            background: #f0fdf4;
-            border: 2px solid #d1fae5;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #047857;
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-        
-        .quantity-button:hover {
-            background: #dcfce7;
-            border-color: #10b981;
-            transform: scale(1.05);
-        }
-        
         .quantity-display {
             font-size: 1.8rem;
             font-weight: bold;
-            width: 4rem;
+            width: 3.5rem; /* Slightly narrower */
             text-align: center;
-            color: #047857;
+            color: var(--primary-color-darker);
         }
-        
         .preview-box {
-            border: 2px dashed #10b981;
-            padding: 1rem;
-            border-radius: 15px;
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px dashed var(--primary-color);
+            padding: 1.25rem; /* More padding */
+            border-radius: var(--border-radius-large);
+            background: linear-gradient(135deg, var(--primary-color-lighter), #e0f2fe); /* Lighter gradient */
             margin-bottom: 1rem;
         }
-        
         .preview-title {
-            font-size: 1rem;
+            font-size: 1.1rem; /* Larger */
             font-weight: 600;
             text-align: center;
-            margin-bottom: 0.75rem;
-            color: #047857;
+            margin-bottom: 1rem; /* More space */
+            color: var(--primary-color-darker);
         }
-        
         .preview-label {
-            background: white;
+            background: var(--background-light);
             padding: 1rem;
-            border-radius: 12px;
-            border: 2px solid #d1fae5;
+            border-radius: var(--border-radius-medium);
+            border: 1px solid var(--border-color);
             text-align: center;
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.1);
+            box-shadow: var(--shadow-sm);
         }
-        
         .preview-product-name {
-            font-size: 1.2rem;
+            font-size: 1.25rem; /* Larger */
             font-weight: bold;
             margin-bottom: 0.75rem;
-            color: #047857;
+            color: var(--primary-color-darker);
         }
-        
         .preview-date {
-            font-size: 0.95rem;
+            font-size: 1rem; /* Larger */
             margin: 0.4rem 0;
-            color: #374151;
-            font-weight: 600;
-        }
-        
-        .print-button {
-            width: 100%;
-            padding: 1rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 15px;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .print-button.enabled {
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-        }
-        
-        .print-button.enabled:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
-        }
-        
-        .print-button.disabled {
-            background: #e5e7eb;
-            color: #9ca3af;
-            cursor: not-allowed;
-        }
-        
-        .help-text {
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin-top: 0.25rem;
+            color: var(--text-primary);
+            font-weight: 500; /* Medium */
         }
 
+        /* Hidden Utility */
         .hidden {
             display: none !important;
         }
@@ -1092,22 +854,22 @@
         /* Success Notification */
         .success-notification {
             position: fixed;
-            top: 2rem;
+            bottom: 2rem; /* From bottom for less obtrusiveness */
             right: 2rem;
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
+            background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color-darker)); /* Darker for more contrast */
+            color: var(--text-on-primary);
             padding: 1rem 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-            font-weight: bold;
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-lg);
+            font-weight: 500; /* Medium */
+            z-index: 2000; /* Ensure it's on top */
+            transform: translateX(calc(100% + 2rem)); /* Start off-screen */
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
         }
-
         .success-notification.show {
             transform: translateX(0);
         }
+
     </style>
 </head>
 <body>
@@ -1130,11 +892,11 @@
             max="999"
         >
         
-        <button id="loginButton" class="login-button" onclick="login()">
+        <button id="loginButton" class="button-base button-primary login-button" onclick="login()">
             Anmelden
         </button>
         
-        <button id="adminButton" class="admin-button" onclick="requestAdminAccess()">
+        <button id="adminButton" class="button-base button-secondary admin-button" onclick="requestAdminAccess()">
             🔐 Administrator-Bereich
         </button>
         
@@ -1160,11 +922,11 @@
             style="letter-spacing: 0.2rem; font-size: 1.5rem;"
         >
         
-        <button id="adminLoginButton" class="login-button" onclick="verifyAdminPassword()">
+        <button id="adminLoginButton" class="button-base button-primary login-button" onclick="verifyAdminPassword()">
             Zugang gewähren
         </button>
         
-        <button class="admin-button" onclick="showLoginScreen()">
+        <button class="button-base button-secondary admin-button" onclick="showLoginScreen()">
             ← Zurück
         </button>
         
@@ -1176,12 +938,12 @@
     <!-- Admin Panel -->
     <div id="adminPanel" class="admin-container hidden">
         <div class="admin-header">
-            <h2 class="admin-title">🔐 Administrator-Bereich</h2>
+            <h2 class="admin-title">Administrator-Bereich</h2>
             <div>
-                <button class="back-button" style="margin-right: 1rem;" onclick="showAdminSettings()">
+                <button class="button-base button-secondary back-button" style="margin-right: 1rem;" onclick="showAdminSettings()">
                     ⚙️ Einstellungen
                 </button>
-                <button class="back-button" onclick="logoutAdmin()">
+                <button class="button-base button-secondary back-button" onclick="logoutAdmin()">
                     ← Abmelden
                 </button>
             </div>
@@ -1211,7 +973,6 @@
                         maxlength="3"
                         min="0"
                         max="999"
-                        style="width: 120px;"
                     >
                     <input 
                         type="text" 
@@ -1219,13 +980,13 @@
                         class="add-user-input" 
                         placeholder="Kürzel"
                         maxlength="3"
-                        style="width: 120px; text-transform: uppercase;"
+                        style="text-transform: uppercase;"
                     >
-                    <button id="addUserButton" class="add-user-button" onclick="addUser()">
+                    <button id="addUserButton" class="button-base button-primary add-user-button" onclick="addUser()">
                         Hinzufügen
                     </button>
                 </div>
-                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #22543d;">
+                <div style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
                     Kürzel: 2-3 Buchstaben (z.B. MX, AB, JD)
                 </div>
             </div>
@@ -1243,7 +1004,7 @@
                     <h3 class="add-user-title">Neue Kategorie hinzufügen</h3>
                     <div class="form-row">
                         <div class="form-group-inline">
-                            <label class="label">Kategorie-Name:</label>
+                            <label class="label" for="newCategoryName">Kategorie-Name:</label>
                             <input 
                                 type="text" 
                                 id="newCategoryName" 
@@ -1251,7 +1012,7 @@
                                 placeholder="z.B. Neue Kategorie"
                             >
                         </div>
-                        <button class="add-user-button" onclick="addCategory()">
+                        <button class="button-base button-primary add-user-button" onclick="addCategory()">
                             Kategorie hinzufügen
                         </button>
                     </div>
@@ -1261,7 +1022,7 @@
             <!-- Product Editor View Tab -->
             <div id="productEditorViewTab" style="display: none;"> <!-- Initially hidden -->
                 <div class="category-header">
-                    <button class="back-to-categories" onclick="closeProductEditorView()"> <!-- Adjusted JS function name -->
+                    <button class="button-base button-secondary back-to-categories" onclick="closeProductEditorView()">
                         ← Zurück zu Kategorien
                     </button>
                     <h3 class="category-title">Produkte bearbeiten: <span id="editorCategoryName"></span></h3>
@@ -1271,72 +1032,76 @@
                     <!-- Products populated by JavaScript -->
                 </div>
 
-                <div class="add-category-section">
+                <div class="add-category-section" style="margin-top: 1.5rem;">
                     <h3 class="add-user-title">Neues Produkt hinzufügen</h3>
-                    <div class="form-row">
-                        <div class="form-group-inline">
-                            <label class="label">Produktname:</label>
-                            <input 
-                                type="text" 
-                                id="newCategoryProductName" 
-                                class="input" 
-                                placeholder="z.B. Neues Produkt"
-                            >
+                    <div class="product-editor-form">
+                        <div class="form-row">
+                            <div class="form-group-inline">
+                                <label class="label" for="newCategoryProductName">Produktname:</label>
+                                <input
+                                    type="text"
+                                    id="newCategoryProductName"
+                                    class="input"
+                                    placeholder="z.B. Neues Produkt"
+                                >
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label" for="newCategoryProductAuftau">Auftau (h):</label>
+                                <input
+                                    type="number"
+                                    id="newCategoryProductAuftau"
+                                    class="input input-small"
+                                    placeholder="24"
+                                    min="0"
+                                >
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label" for="newCategoryProductVorbereitet">Vorbereitet (h):</label>
+                                <input
+                                    type="number"
+                                    id="newCategoryProductVorbereitet"
+                                    class="input input-small"
+                                    placeholder="48"
+                                    min="0"
+                                >
+                            </div>
                         </div>
-                        <div class="form-group-inline">
-                            <label class="label">Auftau (h):</label>
-                            <input 
-                                type="number" 
-                                id="newCategoryProductAuftau" 
-                                class="input input-small" 
-                                placeholder="24"
-                                min="0"
-                            >
-                        </div>
-                        <div class="form-group-inline">
-                            <label class="label">Vorbereitet (h):</label>
-                            <input 
-                                type="number" 
-                                id="newCategoryProductVorbereitet" 
-                                class="input input-small" 
-                                placeholder="48"
-                                min="0"
-                            >
-                        </div>
-                        <div class="form-group-inline">
-                            <label class="label">Anbruch (h):</label>
-                            <input 
-                                type="number" 
-                                id="newCategoryProductAnbruch" 
-                                class="input input-small" 
-                                placeholder="120"
-                                min="0"
-                            >
-                        </div>
-                        <div class="form-group-inline">
-                            <label class="label">Umgefüllt (h):</label>
-                            <input 
-                                type="number" 
-                                id="newCategoryProductUmgefuellt" 
-                                class="input input-small" 
-                                placeholder="24"
-                                min="0"
-                            >
-                        </div>
-                        <div class="form-group-inline">
-                            <label class="label">Lager:</label>
-                            <select id="newCategoryProductLager" class="input">
-                                <option value="Gekühlt">Gekühlt</option>
-                                <option value="Trockenlager">Trockenlager</option>
-                            </select>
+                        <div class="form-row">
+                             <div class="form-group-inline">
+                                <label class="label" for="newCategoryProductAnbruch">Anbruch (h):</label>
+                                <input
+                                    type="number"
+                                    id="newCategoryProductAnbruch"
+                                    class="input input-small"
+                                    placeholder="120"
+                                    min="0"
+                                >
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label" for="newCategoryProductUmgefuellt">Umgefüllt (h):</label>
+                                <input
+                                    type="number"
+                                    id="newCategoryProductUmgefuellt"
+                                    class="input input-small"
+                                    placeholder="24"
+                                    min="0"
+                                >
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label" for="newCategoryProductLager">Lager:</label>
+                                <select id="newCategoryProductLager" class="input">
+                                    <option value="Gekühlt">Gekühlt</option>
+                                    <option value="Trockenlager">Trockenlager</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-row" style="margin-top: 1rem;">
-                        <button class="add-user-button" onclick="addNewProductToCategory()">
+                    <div class="form-row" style="margin-top: 1.5rem;">
+                        <button class="button-base button-primary add-user-button" onclick="addNewProductToCategory()">
                             Produkt hinzufügen
                         </button>
                     </div>
-                    <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #22543d;">
+                    <div style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
                         Tipp: Mindestens ein Haltbarkeitswert muss angegeben werden.
                     </div>
                 </div>
@@ -1345,24 +1110,24 @@
 
         <!-- Backups Tab -->
         <div id="adminBackupsTab" class="tab-content">
-            <div class="backup-section" style="margin-bottom: 0; border: none; background: none; padding: 1rem 0;"> <!-- Adjusted styles for tab content -->
-                <h3 class="backup-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;"> <!-- Larger title for tab context -->
+            <div class="backup-section">
+                <h3 class="backup-title">
                     💾 Backup & Wiederherstellung
                 </h3>
                 <div class="backup-buttons">
-                    <button class="backup-button" onclick="createBackup()">
+                    <button class="button-base button-primary backup-button" onclick="createBackup()">
                         📦 Backup erstellen
                     </button>
-                    <button class="backup-button restore" onclick="document.getElementById('restoreFile').click()">
+                    <button class="button-base backup-button restore" onclick="document.getElementById('restoreFile').click()">
                         📥 Backup wiederherstellen
                     </button>
                 </div>
                 <input type="file" id="restoreFile" class="file-input" accept=".json" onchange="restoreBackup(event)">
-                <div class="backup-info" style="margin-top: 1.5rem;">
+                <div class="backup-info">
                     <strong>Backup enthält:</strong> Alle Benutzerprofile, Kategorien, Produkte und Einstellungen<br>
                     <strong>Tipp:</strong> Erstellen Sie regelmäßig Backups vor wichtigen Änderungen
                 </div>
-                <div id="backupStatus" class="backup-status" style="margin-top: 1.5rem;"></div>
+                <div id="backupStatus" class="backup-status"></div>
             </div>
         </div>
     </div>
@@ -1370,41 +1135,41 @@
     <!-- Admin Settings Modal -->
     <div id="adminSettingsModal" class="modal-overlay hidden">
         <div class="modal">
-            <div class="modal-header">
+            <div class="modal-header" style="margin-bottom: 2rem;">
                 <h3 class="modal-title">⚙️ Administrator-Einstellungen</h3>
-                <button class="close-button" onclick="closeAdminSettings()">✕</button>
+                <button class="button-base button-secondary close-button" onclick="closeAdminSettings()">✕</button>
             </div>
             
-            <div class="form-group">
-                <label class="label">Admin-Passwort ändern:</label>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="label" for="currentAdminPassword">Admin-Passwort ändern:</label>
                 <input type="password" id="currentAdminPassword" class="input" placeholder="Aktuelles Passwort">
             </div>
             
-            <div class="form-group">
-                <label class="label">Neues Passwort:</label>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="label" for="newAdminPassword">Neues Passwort:</label>
                 <input type="password" id="newAdminPassword" class="input" placeholder="Neues Passwort">
             </div>
             
-            <div class="form-group">
-                <label class="label">Passwort bestätigen:</label>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="label" for="confirmAdminPassword">Passwort bestätigen:</label>
                 <input type="password" id="confirmAdminPassword" class="input" placeholder="Passwort wiederholen">
             </div>
             
-            <div class="form-row" style="margin-top: 1.5rem;">
-                <button class="add-user-button" onclick="changeAdminPassword()">
-                    Passwort ändern
-                </button>
-                <button class="back-button" onclick="closeAdminSettings()">
+            <div class="form-row" style="justify-content: flex-end; gap: 0.75rem;"> <!-- Align buttons to right -->
+                <button class="button-base button-secondary back-button" onclick="closeAdminSettings()">
                     Abbrechen
+                </button>
+                <button class="button-base button-primary add-user-button" onclick="changeAdminPassword()">
+                    Passwort ändern
                 </button>
             </div>
             
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #d1fae5;">
-                <h4 style="color: #047857; margin-bottom: 1rem;">Aktuelles Passwort:</h4>
-                <div style="font-family: monospace; background: #f0fdf4; padding: 1rem; border-radius: 10px; color: #22543d; word-break: break-all;" id="currentPasswordDisplay">
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color-light);">
+                <h4 style="color: var(--primary-color-darker); margin-bottom: 0.75rem; font-size: 1rem; font-weight: 600;">Aktuelles Passwort:</h4>
+                <div style="font-family: monospace; background: var(--primary-color-lighter); padding: 0.75rem 1rem; border-radius: var(--border-radius-medium); color: var(--primary-color-darker); word-break: break-all;" id="currentPasswordDisplay">
                     ${ADMIN_PASSWORD}
                 </div>
-                <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
                     Standard-Passwort: admin2024
                 </div>
             </div>
@@ -1419,7 +1184,7 @@
                     <span class="current-user">Angemeldet als: <strong>${currentUser.shortcode}</strong> (PIN ${currentUser.pin})</span>
                 </div>
                 <div>
-                    <button class="logout-button" onclick="logout()">
+                    <button class="button-base button-danger logout-button" onclick="logout()">
                         Abmelden
                     </button>
                 </div>
@@ -1439,7 +1204,7 @@
                         </div>
                         <div id="productsView" class="products-view">
                             <div class="category-header">
-                                <button class="back-to-categories" onclick="showCategories()">
+                                <button class="button-base button-secondary back-to-categories" onclick="showCategories()">
                                     ← Zurück
                                 </button>
                                 <h3 class="category-title" id="currentCategoryTitle"></h3>
@@ -1457,25 +1222,25 @@
                     </h2>
                     
                     <div style="flex: 1; overflow-y: auto; padding-right: 0.5rem;">
-                        <div class="form-group">
-                            <label class="label">Vorbereitungszeit (optional anpassen):</label>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label class="label" for="preparationTime">Vorbereitungszeit (optional anpassen):</label>
                             <input type="datetime-local" id="preparationTime" class="input">
                             <div class="help-text">Standard: Aktuelle Zeit. Nur ändern wenn nötig.</div>
                         </div>
                         
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
                             <label class="label">Anzahl Labels:</label>
                             <div class="quantity-controls">
-                                <button class="quantity-button" onclick="changeQuantity(-1)">−</button>
+                                <button class="button-base button-secondary quantity-button" onclick="changeQuantity(-1)">−</button>
                                 <span class="quantity-display" id="quantity">1</span>
-                                <button class="quantity-button" onclick="changeQuantity(1)">+</button>
+                                <button class="button-base button-secondary quantity-button" onclick="changeQuantity(1)">+</button>
                             </div>
                         </div>
                         
-                        <div id="previewArea"></div>
+                        <div id="previewArea" style="margin-top: 1rem;"></div>
                     </div>
                     
-                    <button id="printButton" class="print-button disabled" onclick="printLabel()" style="flex-shrink: 0;">
+                    <button id="printButton" class="button-base print-button disabled" onclick="printLabel()" style="flex-shrink: 0; margin-top: 1rem;">
                         🖨️ <span id="printText">1 Label drucken</span>
                     </button>
                 </div>
@@ -1510,7 +1275,7 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showBackupStatus(`✅ Backup erfolgreich erstellt: ${filename}`, 'success');
+            showBackupStatus(`Backup erfolgreich erstellt: ${filename}`, 'success');
         }
 
         function restoreBackup(event) {
@@ -1549,8 +1314,8 @@
                     
                     // UI aktualisieren
                     updateUserGrid();
-                    updateCategoryGrid();
-                    renderCategories();
+                    updateCategoryGrid(); // Make sure this is called if products/categories changed
+                    if (typeof renderCategories === "function") renderCategories(); // For main app view
                     
                     // Admin-Passwort Display aktualisieren
                     const passwordDisplay = document.getElementById('currentPasswordDisplay');
@@ -1558,11 +1323,11 @@
                         passwordDisplay.textContent = localStorage.getItem('labelGeneratorAdminPassword') || 'admin2024';
                     }
                     
-                    showBackupStatus(`✅ Backup erfolgreich wiederhergestellt! ${backupData.users.length} Benutzer und ${Object.keys(backupData.products).length} Kategorien geladen.`, 'success');
+                    showBackupStatus(`Backup erfolgreich wiederhergestellt! ${backupData.users.length} Benutzer und ${Object.keys(backupData.products).length} Kategorien geladen.`, 'success');
                     
                 } catch (error) {
                     console.error('Backup restore error:', error);
-                    showBackupStatus(`❌ Fehler beim Wiederherstellen: ${error.message}`, 'error');
+                    showBackupStatus(`Fehler beim Wiederherstellen: ${error.message}`, 'error');
                 }
                 
                 // Reset file input
@@ -1575,7 +1340,7 @@
         function showBackupStatus(message, type) {
             const statusDiv = document.getElementById('backupStatus');
             statusDiv.textContent = message;
-            statusDiv.className = `backup-status ${type}`;
+            statusDiv.className = `backup-status ${type}`; // type is 'success' or 'error'
             statusDiv.style.display = 'block';
             
             setTimeout(() => {
@@ -1684,9 +1449,9 @@
         let preparationTime = new Date();
         let quantity = 1;
         let currentCategory = null;
-        let editingProductIndex = null;
-        let editingCategory = null;
-        let currentEditingCategory = null;
+        // let editingProductIndex = null; // Not directly used by current product editor
+        // let editingCategory = null; // Not directly used by current product editor
+        let currentEditingCategory = null; // Used by new product editor logic
 
         // Produktdaten speichern
         function saveProducts() {
@@ -1699,7 +1464,7 @@
                 if (e.key === 'Enter') {
                     login();
                 }
-                if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) { // Allow Tab
                     e.preventDefault();
                 }
             });
@@ -1721,28 +1486,40 @@
                     e.target.value = e.target.value.slice(0, 3);
                 }
             });
-
-            document.getElementById('newUserPin').addEventListener('keypress', function(e) {
+             document.getElementById('newUserPin').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     document.getElementById('newUserShortcode').focus();
+                }
+                 if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+                    e.preventDefault();
                 }
             });
 
             document.getElementById('newUserShortcode').addEventListener('input', function(e) {
-                // Nur Buchstaben erlauben und in Großbuchstaben umwandeln
                 e.target.value = e.target.value.replace(/[^A-Za-z]/g, '').toUpperCase();
                 if (e.target.value.length > 3) {
                     e.target.value = e.target.value.slice(0, 3);
                 }
             });
-
             document.getElementById('newUserShortcode').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     addUser();
                 }
             });
 
-            saveUsers();
+            // Add similar keypress listener for other number inputs if desired
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', '.' , ','].includes(e.key) && e.key !== 'Enter') {
+                         // Allow Enter for form submission or moving to next field
+                        e.preventDefault();
+                    }
+                });
+            });
+
+
+            saveUsers(); // Ensure users are saved on first load if defaults are used
+            // saveProducts(); // Ensure products are saved on first load (optional, if you want to persist defaults immediately)
             updateUserGrid();
             showLoginScreen();
         });
@@ -1760,22 +1537,23 @@
             document.getElementById('adminPasswordScreen').classList.remove('hidden');
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('adminPasswordInput').value = ''; // Clear field
             document.getElementById('adminPasswordInput').focus();
             hideAdminPasswordError();
         }
 
         function verifyAdminPassword() {
             const enteredPassword = document.getElementById('adminPasswordInput').value;
+            const currentAdminPass = localStorage.getItem('labelGeneratorAdminPassword') || 'admin2024'; // Get fresh value
             
-            if (enteredPassword === ADMIN_PASSWORD) {
+            if (enteredPassword === currentAdminPass) {
                 isAdminAuthenticated = true;
                 document.getElementById('adminPasswordInput').value = '';
                 hideAdminPasswordError();
                 
-                // Führe die angeforderte Aktion aus
                 if (requestedAdminAction === 'products') {
                     showAdminPanel('products');
-                } else {
+                } else { // Default to users or any other specific action
                     showAdminPanel('users');
                 }
                 requestedAdminAction = null;
@@ -1786,8 +1564,12 @@
         }
 
         function showAdminPasswordError() {
-            document.getElementById('adminPasswordError').classList.remove('hidden');
+            const errorDiv = document.getElementById('adminPasswordError');
+            errorDiv.classList.remove('hidden');
+            // Shake animation (optional)
+            errorDiv.style.animation = 'shake 0.5s';
             setTimeout(() => {
+                errorDiv.style.animation = ''; // Reset animation
                 hideAdminPasswordError();
             }, 3000);
         }
@@ -1804,7 +1586,7 @@
 
         function showAdminPanel(startTab = 'users') {
             if (!isAdminAuthenticated) {
-                requestAdminAccess(startTab);
+                requestAdminAccess(startTab); // Pass the intended start tab
                 return;
             }
 
@@ -1817,12 +1599,10 @@
         }
 
         function showAdminTab(tabName) {
-            // Tab-Buttons aktualisieren
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Finde den richtigen Tab-Button
             const targetTabButton = Array.from(document.querySelectorAll('.admin-tab')).find(tab => {
                 const tabKey = tab.getAttribute('onclick').match(/'([^']+)'/)[1];
                 return tabKey === tabName;
@@ -1832,67 +1612,73 @@
                 targetTabButton.classList.add('active');
             }
 
-            // Tab-Inhalte verstecken/zeigen
             document.querySelectorAll('#adminPanel .tab-content').forEach(content => {
-                content.classList.remove('active');
+                content.classList.remove('active'); // Handled by CSS .tab-content
+                content.style.display = 'none'; // Explicitly hide
             });
 
+            let activeTabContent;
             if (tabName === 'users') {
-                document.getElementById('adminUsersTab').classList.add('active');
+                activeTabContent = document.getElementById('adminUsersTab');
                 updateUserGrid();
                 document.getElementById('newUserPin').focus();
             } else if (tabName === 'products') {
-                document.getElementById('adminProductsTab').classList.add('active');
-                // Default to categories overview
+                activeTabContent = document.getElementById('adminProductsTab');
+                // Default to categories overview inside products tab
                 document.getElementById('categoriesOverviewTab').style.display = 'block';
-                document.getElementById('categoriesOverviewTab').classList.add('active'); // Keep active class for consistency if CSS relies on it
+                document.getElementById('categoriesOverviewTab').classList.add('active');
                 document.getElementById('productEditorViewTab').style.display = 'none';
                 document.getElementById('productEditorViewTab').classList.remove('active');
                 updateCategoryGrid();
             } else if (tabName === 'backups') {
-                document.getElementById('adminBackupsTab').classList.add('active');
-                // Any specific actions for backup tab can be added here
+                activeTabContent = document.getElementById('adminBackupsTab');
+            }
+
+            if (activeTabContent) {
+                activeTabContent.style.display = 'block';
+                activeTabContent.classList.add('active');
             }
         }
 
         function showAdminSettings() {
             document.getElementById('adminSettingsModal').classList.remove('hidden');
+            // Display current password
+            const passwordDisplay = document.getElementById('currentPasswordDisplay');
+            if (passwordDisplay) {
+                passwordDisplay.textContent = localStorage.getItem('labelGeneratorAdminPassword') || 'admin2024';
+            }
             document.getElementById('currentAdminPassword').focus();
         }
 
         function closeAdminSettings() {
             document.getElementById('adminSettingsModal').classList.add('hidden');
-            // Felder leeren
             document.getElementById('currentAdminPassword').value = '';
             document.getElementById('newAdminPassword').value = '';
             document.getElementById('confirmAdminPassword').value = '';
         }
 
         function changeAdminPassword() {
-            const currentPw = document.getElementById('currentAdminPassword').value;
+            const currentPwInput = document.getElementById('currentAdminPassword').value;
             const newPw = document.getElementById('newAdminPassword').value;
             const confirmPw = document.getElementById('confirmAdminPassword').value;
+            const actualCurrentAdminPass = localStorage.getItem('labelGeneratorAdminPassword') || 'admin2024';
 
-            if (currentPw !== ADMIN_PASSWORD) {
+            if (currentPwInput !== actualCurrentAdminPass) {
                 alert('Aktuelles Passwort ist falsch!');
                 return;
             }
-
             if (newPw.length < 4) {
                 alert('Neues Passwort muss mindestens 4 Zeichen lang sein!');
                 return;
             }
-
             if (newPw !== confirmPw) {
                 alert('Passwort-Bestätigung stimmt nicht überein!');
                 return;
             }
 
-            // Passwort ändern
             localStorage.setItem('labelGeneratorAdminPassword', newPw);
-            
-            // Aktualisiere die globale Variable (Seite muss neu geladen werden für vollständige Aktualisierung)
-            alert(`Passwort erfolgreich geändert!\n\nNeues Passwort: ${newPw}\n\nBitte notieren Sie sich das neue Passwort.`);
+            // ADMIN_PASSWORD variable is const, page would need reload for it to update in current session's JS
+            alert(`Passwort erfolgreich geändert zu: ${newPw}\nBitte merken Sie sich das neue Passwort.`);
             
             closeAdminSettings();
             showSuccessNotification('Admin-Passwort wurde geändert!');
@@ -1908,12 +1694,16 @@
             const user = users.find(u => u.pin === pin);
             
             if (user && pin.length === 3) {
-                currentUser = user;
+                currentUser = user; // Set for use in other functions
                 showMainApp();
                 hideLoginError();
             } else {
                 showLoginError();
                 document.getElementById('pinInput').value = '';
+                 // Shake animation for login container (optional)
+                const loginContainer = document.getElementById('loginScreen');
+                loginContainer.style.animation = 'shake 0.5s';
+                setTimeout(() => { loginContainer.style.animation = ''; }, 500);
             }
         }
 
@@ -1926,7 +1716,8 @@
         }
 
         function showLoginError() {
-            document.getElementById('loginError').classList.remove('hidden');
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.classList.remove('hidden');
             setTimeout(() => {
                 hideLoginError();
             }, 3000);
@@ -1941,9 +1732,8 @@
             document.getElementById('adminPasswordScreen').classList.add('hidden');
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('pinInput').value = ''; // Clear PIN on show
             document.getElementById('pinInput').focus();
-            
-            // Admin-Status zurücksetzen beim Logout
             isAdminAuthenticated = false;
             requestedAdminAction = null;
         }
@@ -1954,65 +1744,32 @@
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             
-            // Benutzer-Info aktualisieren
-            const userInfoBar = document.querySelector('.user-info-bar div');
-            userInfoBar.innerHTML = `<span class="current-user">Angemeldet als: <strong>${currentUser.shortcode}</strong> (PIN ${currentUser.pin})</span>`;
+            const userInfoBar = document.querySelector('.user-info-bar div:first-child'); // More specific selector
+            if (currentUser && userInfoBar) { // Check if currentUser is set
+                 userInfoBar.innerHTML = `<span class="current-user">Angemeldet als: <strong>${currentUser.shortcode}</strong> (PIN ${currentUser.pin})</span>`;
+            }
             
-            // Aktualisiere Zeit bei jedem Login
-            preparationTime = new Date();
-            
+            preparationTime = new Date(); // Reset/update time
             initializeMainApp();
         }
 
         function updateUserGrid() {
             const userGrid = document.getElementById('userGrid');
+            if (!userGrid) return;
             userGrid.innerHTML = '';
 
             users.forEach((user, index) => {
                 const userCard = document.createElement('div');
                 userCard.className = 'user-card';
-                
-                // Benutzer-Inhalt
-                const userContent = document.createElement('div');
-                userContent.innerHTML = `
-                    <div class="user-pin">${user.pin}</div>
-                    <div style="font-size: 1.2rem; font-weight: bold; color: #2563eb; margin: 0.5rem 0;">${user.shortcode}</div>
-                    <div class="user-info">Erstellt: ${user.created}</div>
+                userCard.innerHTML = `
+                    <div>
+                        <div class="user-pin">${user.pin}</div>
+                        <div style="font-size: 1.2rem; font-weight: 600; color: var(--secondary-color-dark); margin: 0.25rem 0 0.5rem;">${user.shortcode}</div>
+                        <div class="user-info">Erstellt: ${user.created}</div>
+                    </div>
+                    <button class="delete-button" title="Benutzer löschen" data-index="${index}">×</button>
                 `;
-                
-                // Delete-Button erstellen
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-button';
-                deleteBtn.innerHTML = '×';
-                deleteBtn.title = 'Benutzer löschen';
-                deleteBtn.style.position = 'absolute';
-                deleteBtn.style.top = '0.5rem';
-                deleteBtn.style.right = '0.5rem';
-                deleteBtn.style.background = '#fc8181';
-                deleteBtn.style.color = 'white';
-                deleteBtn.style.border = 'none';
-                deleteBtn.style.borderRadius = '50%';
-                deleteBtn.style.width = '30px';
-                deleteBtn.style.height = '30px';
-                deleteBtn.style.cursor = 'pointer';
-                deleteBtn.style.fontWeight = 'bold';
-                deleteBtn.style.fontSize = '16px';
-                
-                // Event-Listener hinzufügen
-                deleteBtn.onclick = function() {
-                    deleteUserByIndex(index, user);
-                };
-                
-                // Hover-Effekt
-                deleteBtn.onmouseenter = function() {
-                    this.style.background = '#f56565';
-                };
-                deleteBtn.onmouseleave = function() {
-                    this.style.background = '#fc8181';
-                };
-                
-                userCard.appendChild(userContent);
-                userCard.appendChild(deleteBtn);
+                userCard.querySelector('.delete-button').onclick = () => deleteUserByIndex(index, user);
                 userGrid.appendChild(userCard);
             });
         }
@@ -2022,11 +1779,11 @@
                 alert('Mindestens ein Benutzer muss vorhanden sein!');
                 return;
             }
-
             if (confirm(`Benutzer ${user.shortcode} (PIN ${user.pin}) wirklich löschen?`)) {
                 users.splice(index, 1);
                 saveUsers();
                 updateUserGrid();
+                showSuccessNotification(`Benutzer ${user.shortcode} gelöscht.`);
             }
         }
 
@@ -2035,114 +1792,80 @@
             const newShortcode = document.getElementById('newUserShortcode').value.toUpperCase();
             
             if (newPin.length !== 3) {
-                alert('PIN muss genau 3 Ziffern haben!');
-                return;
+                alert('PIN muss genau 3 Ziffern haben!'); return;
             }
-
             if (newShortcode.length < 2 || newShortcode.length > 3) {
-                alert('Kürzel muss 2-3 Buchstaben haben!');
-                return;
+                alert('Kürzel muss 2-3 Buchstaben haben!'); return;
             }
-
             if (!/^[A-Z]+$/.test(newShortcode)) {
-                alert('Kürzel darf nur Buchstaben enthalten!');
-                return;
+                alert('Kürzel darf nur Buchstaben enthalten!'); return;
             }
-
             if (users.find(u => u.pin === newPin)) {
-                alert('Diese PIN existiert bereits!');
-                return;
+                alert('Diese PIN existiert bereits!'); return;
             }
-
             if (users.find(u => u.shortcode === newShortcode)) {
-                alert('Dieses Kürzel existiert bereits!');
-                return;
+                alert('Dieses Kürzel existiert bereits!'); return;
             }
 
-            users.push({
-                pin: newPin,
-                shortcode: newShortcode,
-                created: new Date().toLocaleDateString()
-            });
-
+            users.push({ pin: newPin, shortcode: newShortcode, created: new Date().toLocaleDateString() });
             saveUsers();
             updateUserGrid();
             document.getElementById('newUserPin').value = '';
             document.getElementById('newUserShortcode').value = '';
             document.getElementById('newUserPin').focus();
-        }
-
-        // Produktverwaltung - jetzt über showTab ersetzt
-        function showTab(tabName) {
-            // Diese Funktion wird jetzt von showAdminTab ersetzt
-            if (tabName === 'categories') {
-                updateCategoryGrid();
-            }
+            showSuccessNotification(`Benutzer ${newShortcode} hinzugefügt.`);
         }
 
         function updateCategoryGrid() {
             const categoryGrid = document.getElementById('categoryGrid');
+            if (!categoryGrid) return;
             categoryGrid.innerHTML = '';
 
             Object.entries(products).forEach(([categoryName, items]) => {
                 const categoryCard = document.createElement('div');
                 categoryCard.className = 'category-card';
-                
                 categoryCard.innerHTML = `
                     <div class="category-name">${categoryName}</div>
                     <div class="product-count">${items.length} Produkte</div>
                     <div class="category-actions">
-                        <button class="btn-small btn-edit">✏️ Produkte bearbeiten</button>
-                        <button class="btn-small btn-delete">🗑️ Kategorie löschen</button>
+                        <button class="button-base btn-edit btn-small">✏️ Produkte bearbeiten</button>
+                        <button class="button-base btn-delete btn-small">🗑️ Kategorie löschen</button>
                     </div>
                     <div class="product-mini-list">
-                        ${items.slice(0, 5).map(item => `<div class="product-mini-item">${item.name}</div>`).join('')}
-                        ${items.length > 5 ? `<div class="product-mini-item"><em>...und ${items.length - 5} weitere</em></div>` : ''}
+                        ${items.slice(0, 3).map(item => `<div class="product-mini-item">${item.name}</div>`).join('')}
+                        ${items.length > 3 ? `<div class="product-mini-item"><em>...und ${items.length - 3} weitere</em></div>` : ''}
                     </div>
                 `;
-                
-                // Event-Handler direkt hinzufügen
-                const editBtn = categoryCard.querySelector('.btn-edit');
-                const deleteBtn = categoryCard.querySelector('.btn-delete');
-                
-                editBtn.addEventListener('click', () => openProductEditorView(categoryName)); // Adjusted function call
-                deleteBtn.addEventListener('click', () => deleteCategory(categoryName));
-                
+                categoryCard.querySelector('.btn-edit').addEventListener('click', () => openProductEditorView(categoryName));
+                categoryCard.querySelector('.btn-delete').addEventListener('click', () => deleteCategory(categoryName));
                 categoryGrid.appendChild(categoryCard);
             });
         }
 
         function openProductEditorView(categoryName) {
-            // Hide categories overview, show product editor view
             document.getElementById('categoriesOverviewTab').style.display = 'none';
             document.getElementById('categoriesOverviewTab').classList.remove('active');
             document.getElementById('productEditorViewTab').style.display = 'block';
-            document.getElementById('productEditorViewTab').classList.add('active'); // Keep active class for consistency
+            document.getElementById('productEditorViewTab').classList.add('active');
             
-            // Set category title
             document.getElementById('editorCategoryName').textContent = categoryName;
             currentEditingCategory = categoryName;
-            
-            // Load product list
             loadCategoryProducts(categoryName);
         }
 
         function loadCategoryProducts(categoryName) {
-            const productList = document.getElementById('categoryProductsList');
+            const productListDiv = document.getElementById('categoryProductsList');
+            if (!productListDiv || !products[categoryName]) return;
             const items = products[categoryName];
+            productListDiv.innerHTML = '';
             
-            // Leere die Liste
-            productList.innerHTML = '';
-            
-            // Erstelle Produktelemente
             items.forEach((product, index) => {
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product-editor-item';
-                
                 productDiv.innerHTML = `
                     <div class="product-editor-form">
                         <div class="form-row">
-                            <div class="form-group-inline">
+                            <div class="form-group-inline" style="flex-grow: 2;">
                                 <label class="label">Produktname:</label>
                                 <input type="text" class="input product-name-input" value="${product.name}">
                             </div>
@@ -2154,11 +1877,13 @@
                                 <label class="label">Vorbereitet (h):</label>
                                 <input type="number" class="input input-small product-vorbereitet-input" value="${product.vorbereitet || ''}" min="0">
                             </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group-inline">
                                 <label class="label">Anbruch (h):</label>
                                 <input type="number" class="input input-small product-anbruch-input" value="${product.anbruch || ''}" min="0">
                             </div>
-                            <div class="form-group-inline">
+                             <div class="form-group-inline">
                                 <label class="label">Umgefüllt (h):</label>
                                 <input type="number" class="input input-small product-umgefuellt-input" value="${product.umgefüllt || ''}" min="0">
                             </div>
@@ -2169,83 +1894,59 @@
                                     <option value="Trockenlager" ${product.lager === 'Trockenlager' ? 'selected' : ''}>Trockenlager</option>
                                 </select>
                             </div>
-                            <div class="form-group-inline">
-                                <label class="label">&nbsp;</label>
-                                <div style="display: flex; gap: 0.5rem;">
-                                    <button class="btn-small btn-edit save-product-btn">💾 Speichern</button>
-                                    <button class="btn-small btn-delete delete-product-btn">🗑️ Löschen</button>
+                            <div class="form-group-inline" style="justify-content: flex-end;">
+                                <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+                                    <button class="button-base button-secondary btn-small save-product-btn">💾 Speichern</button>
+                                    <button class="button-base btn-delete btn-small delete-product-btn">🗑️ Löschen</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
-                
-                // Event-Handler für Speichern und Löschen
-                const saveBtn = productDiv.querySelector('.save-product-btn');
-                const deleteBtn = productDiv.querySelector('.delete-product-btn');
-                
-                saveBtn.addEventListener('click', () => saveProductChanges(categoryName, index, productDiv));
-                deleteBtn.addEventListener('click', () => deleteProductFromEditor(categoryName, index));
-                
-                productList.appendChild(productDiv);
+                productDiv.querySelector('.save-product-btn').addEventListener('click', () => saveProductChanges(categoryName, index, productDiv));
+                productDiv.querySelector('.delete-product-btn').addEventListener('click', () => deleteProductFromEditor(categoryName, index));
+                productListDiv.appendChild(productDiv);
             });
         }
 
         function saveProductChanges(categoryName, index, productDiv) {
-            const nameInput = productDiv.querySelector('.product-name-input');
-            const auftauInput = productDiv.querySelector('.product-auftau-input');
-            const vorbereitetInput = productDiv.querySelector('.product-vorbereitet-input');
-            const anbruchInput = productDiv.querySelector('.product-anbruch-input');
-            const umgefuelltInput = productDiv.querySelector('.product-umgefuellt-input');
-            const lagerInput = productDiv.querySelector('.product-lager-input');
+            const name = productDiv.querySelector('.product-name-input').value.trim();
+            if (!name) { alert('Produktname darf nicht leer sein!'); return; }
             
-            const name = nameInput.value.trim();
-            if (!name) {
-                alert('Produktname darf nicht leer sein!');
-                return;
-            }
-            
-            const auftau = auftauInput.value;
-            const vorbereitet = vorbereitetInput.value;
-            const anbruch = anbruchInput.value;
-            
-            // Mindestens ein Haltbarkeitswert
+            const auftau = productDiv.querySelector('.product-auftau-input').value;
+            const vorbereitet = productDiv.querySelector('.product-vorbereitet-input').value;
+            const anbruch = productDiv.querySelector('.product-anbruch-input').value;
             if (!auftau && !vorbereitet && !anbruch) {
-                alert('Mindestens ein Haltbarkeitswert muss angegeben werden!');
+                alert('Mindestens ein Haltbarkeitswert (Auftau, Vorbereitet oder Anbruch) muss angegeben werden!');
                 return;
             }
-            
-            // Prüfe Duplikate (außer dem aktuellen)
-            const existingIndex = products[categoryName].findIndex((p, i) => p.name === name && i !== index);
+            const existingIndex = products[categoryName].findIndex((p, i) => p.name.toLowerCase() === name.toLowerCase() && i !== index);
             if (existingIndex !== -1) {
-                alert('Ein Produkt mit diesem Namen existiert bereits!');
+                alert('Ein Produkt mit diesem Namen existiert bereits in dieser Kategorie!');
                 return;
             }
             
-            // Speichere Änderungen
             products[categoryName][index] = {
                 name: name,
                 auftau: auftau ? parseInt(auftau) : null,
                 vorbereitet: vorbereitet ? parseInt(vorbereitet) : null,
                 anbruch: anbruch ? parseInt(anbruch) : null,
-                umgefüllt: umgefuelltInput.value ? parseInt(umgefuelltInput.value) : null,
-                lager: lagerInput.value
+                umgefüllt: productDiv.querySelector('.product-umgefuellt-input').value ? parseInt(productDiv.querySelector('.product-umgefuellt-input').value) : null,
+                lager: productDiv.querySelector('.product-lager-input').value
             };
-            
             saveProducts();
             showSuccessNotification(`"${name}" wurde gespeichert!`);
+            // No reload needed, changes are in place. Could add visual feedback to saved item.
         }
 
         function deleteProductFromEditor(categoryName, index) {
             const product = products[categoryName][index];
-            
-            if (!confirm(`"${product.name}" wirklich löschen?`)) {
-                return;
-            }
+            if (!confirm(`"${product.name}" wirklich löschen?`)) return;
             
             products[categoryName].splice(index, 1);
             saveProducts();
-            loadCategoryProducts(categoryName);
+            loadCategoryProducts(categoryName); // Reload this category's products
+            updateCategoryGrid(); // Update product counts on category cards
             showSuccessNotification(`"${product.name}" wurde gelöscht!`);
         }
 
@@ -2254,26 +1955,16 @@
             if (!categoryName) return;
             
             const name = document.getElementById('newCategoryProductName').value.trim();
-            if (!name) {
-                alert('Bitte Produktname eingeben!');
-                return;
-            }
-            
-            // Prüfe Duplikate
-            if (products[categoryName].find(p => p.name === name)) {
-                alert('Ein Produkt mit diesem Namen existiert bereits!');
-                return;
+            if (!name) { alert('Bitte Produktname eingeben!'); return; }
+            if (products[categoryName].find(p => p.name.toLowerCase() === name.toLowerCase())) {
+                alert('Ein Produkt mit diesem Namen existiert bereits!'); return;
             }
             
             const auftau = document.getElementById('newCategoryProductAuftau').value;
             const vorbereitet = document.getElementById('newCategoryProductVorbereitet').value;
             const anbruch = document.getElementById('newCategoryProductAnbruch').value;
-            const umgefuellt = document.getElementById('newCategoryProductUmgefuellt').value;
-            const lager = document.getElementById('newCategoryProductLager').value;
-            
-            // Mindestens ein Haltbarkeitswert
             if (!auftau && !vorbereitet && !anbruch) {
-                alert('Mindestens ein Haltbarkeitswert muss angegeben werden!');
+                alert('Mindestens ein Haltbarkeitswert (Auftau, Vorbereitet oder Anbruch) muss angegeben werden!');
                 return;
             }
             
@@ -2282,201 +1973,75 @@
                 auftau: auftau ? parseInt(auftau) : null,
                 vorbereitet: vorbereitet ? parseInt(vorbereitet) : null,
                 anbruch: anbruch ? parseInt(anbruch) : null,
-                umgefüllt: umgefuellt ? parseInt(umgefuellt) : null,
-                lager: lager
+                umgefüllt: document.getElementById('newCategoryProductUmgefuellt').value ? parseInt(document.getElementById('newCategoryProductUmgefuellt').value) : null,
+                lager: document.getElementById('newCategoryProductLager').value
             };
             
             products[categoryName].push(newProduct);
             saveProducts();
-            loadCategoryProducts(categoryName);
+            loadCategoryProducts(categoryName); // Reload this category
+            updateCategoryGrid(); // Update product counts
             
-            // Formular zurücksetzen
             document.getElementById('newCategoryProductName').value = '';
             document.getElementById('newCategoryProductAuftau').value = '';
             document.getElementById('newCategoryProductVorbereitet').value = '';
             document.getElementById('newCategoryProductAnbruch').value = '';
             document.getElementById('newCategoryProductUmgefuellt').value = '';
             document.getElementById('newCategoryProductLager').value = 'Gekühlt';
-            
             showSuccessNotification(`"${name}" wurde hinzugefügt!`);
         }
 
         function closeProductEditorView() {
-            // Hide product editor view, show categories overview
             document.getElementById('productEditorViewTab').style.display = 'none';
             document.getElementById('productEditorViewTab').classList.remove('active');
             document.getElementById('categoriesOverviewTab').style.display = 'block';
             document.getElementById('categoriesOverviewTab').classList.add('active');
             currentEditingCategory = null;
+            updateCategoryGrid(); // Refresh category grid in case counts changed
         }
 
         function addCategory() {
             const categoryName = document.getElementById('newCategoryName').value.trim();
-            
-            if (!categoryName) {
-                alert('Bitte geben Sie einen Kategorienamen ein!');
-                return;
-            }
-
-            if (products[categoryName]) {
-                alert('Diese Kategorie existiert bereits!');
-                return;
-            }
+            if (!categoryName) { alert('Bitte geben Sie einen Kategorienamen ein!'); return; }
+            if (products[categoryName]) { alert('Diese Kategorie existiert bereits!'); return; }
 
             products[categoryName] = [];
             saveProducts();
             updateCategoryGrid();
-            updateProductCategorySelect();
+            // updateProductCategorySelect(); // This function was for an old product tab, can be removed
             document.getElementById('newCategoryName').value = '';
-            
             showSuccessNotification(`Kategorie "${categoryName}" wurde hinzugefügt!`);
-        }
-
-        function editCategory(categoryName) {
-            const newName = prompt(`Kategorie umbenennen von "${categoryName}" zu:`, categoryName);
-            
-            if (!newName || newName === categoryName) return;
-            
-            if (products[newName]) {
-                alert('Eine Kategorie mit diesem Namen existiert bereits!');
-                return;
-            }
-
-            products[newName] = products[categoryName];
-            delete products[categoryName];
-            saveProducts();
-            updateCategoryGrid();
-            updateProductCategorySelect();
-            
-            showSuccessNotification(`Kategorie wurde zu "${newName}" umbenannt!`);
         }
 
         function deleteCategory(categoryName) {
             if (Object.keys(products).length <= 1) {
-                alert('Mindestens eine Kategorie muss vorhanden sein!');
-                return;
+                alert('Mindestens eine Kategorie muss vorhanden sein!'); return;
             }
-
             const productCount = products[categoryName].length;
-            if (!confirm(`Kategorie "${categoryName}" mit ${productCount} Produkten wirklich löschen?`)) {
-                return;
-            }
+            if (!confirm(`Kategorie "${categoryName}" mit ${productCount} Produkten wirklich löschen? Alle Produkte in dieser Kategorie gehen verloren!`)) return;
 
             delete products[categoryName];
             saveProducts();
             updateCategoryGrid();
-            updateProductCategorySelect();
-            
+            // updateProductCategorySelect(); // Remove if not used
             showSuccessNotification(`Kategorie "${categoryName}" wurde gelöscht!`);
         }
 
-        // Überflüssige Funktionen vom alten Produkt-Tab entfernt
-        // updateProductCategorySelect(), loadProductsForCategory(), addProduct(), etc.
-        // Diese sind jetzt durch den neuen Category Products Editor ersetzt
+        // Dummy function, falls noch irgendwo Referenzen existieren (sollte nicht mehr der Fall sein)
+        function updateProductCategorySelect() { /* console.log('updateProductCategorySelect called but is deprecated'); */ }
+        function editProduct() { /* console.log('editProduct (old modal) called but is deprecated'); */ }
+        function closeEditProductModal() { /* console.log('closeEditProductModal called but is deprecated'); */ }
+        function saveEditProduct() { /* console.log('saveEditProduct (old modal) called but is deprecated'); */ }
+        function deleteProduct() { /* console.log('deleteProduct (old modal) called but is deprecated'); */ }
+        function loadProductsForCategory() { /* console.log('loadProductsForCategory (old modal) called but is deprecated'); */ }
 
-        function updateProductCategorySelect() {
-            // Dummy function für Kompatibilität
-        }
-
-        function editProduct(categoryName, index) {
-            console.log('editProduct called:', categoryName, index); // Debug
-            editingCategory = categoryName;
-            editingProductIndex = index;
-            const product = products[categoryName][index];
-            
-            console.log('Editing product:', product); // Debug
-            
-            // Modal öffnen und Felder füllen
-            document.getElementById('editProductName').value = product.name;
-            document.getElementById('editProductAuftau').value = product.auftau || '';
-            document.getElementById('editProductVorbereitet').value = product.vorbereitet || '';
-            document.getElementById('editProductAnbruch').value = product.anbruch || '';
-            document.getElementById('editProductUmgefuellt').value = product.umgefüllt || '';
-            document.getElementById('editProductLager').value = product.lager;
-            
-            // Modal anzeigen
-            const modal = document.getElementById('editProductModal');
-            modal.classList.remove('hidden');
-            console.log('Modal should be visible now'); // Debug
-        }
-
-        function closeEditProductModal() {
-            const modal = document.getElementById('editProductModal');
-            modal.classList.add('hidden');
-            editingCategory = null;
-            editingProductIndex = null;
-        }
-
-        function saveEditProduct() {
-            if (editingCategory === null || editingProductIndex === null) {
-                console.log('No product being edited');
-                return;
-            }
-
-            const name = document.getElementById('editProductName').value.trim();
-            if (!name) {
-                alert('Bitte geben Sie einen Produktnamen ein!');
-                return;
-            }
-
-            const auftau = document.getElementById('editProductAuftau').value;
-            const vorbereitet = document.getElementById('editProductVorbereitet').value;
-            const anbruch = document.getElementById('editProductAnbruch').value;
-            const umgefuellt = document.getElementById('editProductUmgefuellt').value;
-            const lager = document.getElementById('editProductLager').value;
-
-            // Mindestens ein Haltbarkeitswert muss angegeben werden
-            if (!auftau && !vorbereitet && !anbruch) {
-                alert('Mindestens ein Haltbarkeitswert (Auftau, Vorbereitet oder Anbruch) muss angegeben werden!');
-                return;
-            }
-
-            // Prüfe ob Name bereits existiert (außer beim aktuellen Produkt)
-            const existingProduct = products[editingCategory].find((p, i) => p.name === name && i !== editingProductIndex);
-            if (existingProduct) {
-                alert('Ein Produkt mit diesem Namen existiert bereits in dieser Kategorie!');
-                return;
-            }
-
-            const updatedProduct = {
-                name: name,
-                auftau: auftau ? parseInt(auftau) : null,
-                vorbereitet: vorbereitet ? parseInt(vorbereitet) : null,
-                anbruch: anbruch ? parseInt(anbruch) : null,
-                umgefüllt: umgefuellt ? parseInt(umgefuellt) : null,
-                lager: lager
-            };
-
-            products[editingCategory][editingProductIndex] = updatedProduct;
-            saveProducts();
-            loadProductsForCategory();
-            closeEditProductModal();
-            
-            showSuccessNotification(`Produkt "${name}" wurde aktualisiert!`);
-        }
-
-        function deleteProduct(categoryName, index) {
-            console.log('deleteProduct called:', categoryName, index); // Debug
-            const product = products[categoryName][index];
-            
-            if (!confirm(`Produkt "${product.name}" wirklich löschen?`)) {
-                return;
-            }
-
-            products[categoryName].splice(index, 1);
-            saveProducts();
-            loadProductsForCategory();
-            
-            showSuccessNotification(`Produkt "${product.name}" wurde gelöscht!`);
-        }
 
         // Hauptapp
         function initializeMainApp() {
-            // Setze aktuelle Zeit bei App-Start
             preparationTime = new Date();
             document.getElementById('preparationTime').value = preparationTime.toISOString().slice(0, 16);
-            renderProducts();
-            showCategories(); // Stelle sicher, dass Kategorieansicht angezeigt wird
+            renderCategories(); // Changed from renderProducts to renderCategories for clarity
+            showCategories();
             
             document.getElementById('preparationTime').addEventListener('change', function(e) {
                 preparationTime = new Date(e.target.value);
@@ -2484,71 +2049,65 @@
             });
         }
 
-        function renderProducts() {
-            renderCategories();
-        }
-
-        function renderCategories() {
+        function renderCategories() { // Renamed from renderProducts
             const categoryView = document.getElementById('categoryView');
+            if (!categoryView) return;
             categoryView.innerHTML = '';
 
             Object.entries(products).forEach(([category, items]) => {
                 const categoryButton = document.createElement('button');
-                categoryButton.className = 'category-button';
-                categoryButton.innerHTML = `${category} (${items.length})`;
-                categoryButton.onclick = () => showProducts(category);
+                // Apply base button styles + specific category button styles if needed
+                categoryButton.className = 'button-base button-primary category-button';
+                categoryButton.innerHTML = `${category} <span style="font-size: 0.8em; opacity: 0.8;">(${items.length})</span>`;
+                categoryButton.onclick = () => showProductsInCategory(category); // Renamed for clarity
                 categoryView.appendChild(categoryButton);
             });
         }
 
-        function showProducts(category) {
+        function showProductsInCategory(category) { // Renamed from showProducts
             currentCategory = category;
             const items = products[category];
             
-            // Verstecke Kategorien, zeige Produkte
             document.getElementById('categoryView').style.display = 'none';
             document.getElementById('productsView').style.display = 'block';
+            document.getElementById('currentCategoryTitle').textContent = `${category}`; // Simpler title
             
-            // Setze Kategorie-Titel
-            document.getElementById('currentCategoryTitle').textContent = `${category} (${items.length})`;
-            
-            // Rendere Produkte
-            const productsList = document.getElementById('productsList');
-            productsList.innerHTML = items.map((product, index) => `
+            const productsListDiv = document.getElementById('productsList');
+            productsListDiv.innerHTML = items.map((product, index) => `
                 <button class="product-item" onclick="selectProduct('${category}', ${index})">
                     <div class="product-name">${product.name}</div>
                     <div class="product-info">
-                        <span class="haltbar">Haltbar: ${product.vorbereitet || product.anbruch || product.auftau || 24}h</span>
-                        ${product.auftau && product.vorbereitet ? ` (Auftau: ${product.auftau}h)` : ''}
+                        <span class="haltbar">Haltbar: ${product.vorbereitet || product.anbruch || product.auftau || 'N/A'}h</span>
+                        ${product.auftau ? ` (Auftau: ${product.auftau}h)` : ''}
                         ${product.anbruch && !product.vorbereitet ? ' (nach Anbruch)' : ''}
                         | ${product.lager}
                     </div>
                 </button>
             `).join('');
+            // Scroll to top of product list
+            productsListDiv.scrollTop = 0;
         }
 
         function showCategories() {
-            // Zeige Kategorien, verstecke Produkte
             document.getElementById('categoryView').style.display = 'block';
             document.getElementById('productsView').style.display = 'none';
             currentCategory = null;
+            selectedProduct = null; // Deselect product when going back to categories
+            updatePreview(); // Clear preview
+            updatePrintButton(); // Disable print button
             
-            // Entferne Auswahl
-            document.querySelectorAll('.product-item').forEach(item => {
-                item.classList.remove('selected');
-            });
+            const productItems = document.querySelectorAll('.product-item');
+            if (productItems) productItems.forEach(item => item.classList.remove('selected'));
         }
 
         function selectProduct(category, index) {
             selectedProduct = products[category][index];
             
-            document.querySelectorAll('.product-item').forEach(item => {
-                item.classList.remove('selected');
-            });
+            document.querySelectorAll('.product-item').forEach(item => item.classList.remove('selected'));
+            if (event && event.target) { // Ensure event and target exist
+                 event.target.closest('.product-item').classList.add('selected');
+            }
             
-            event.target.closest('.product-item').classList.add('selected');
-            
-            // Aktualisiere Vorbereitungszeit auf aktuelle Zeit bei neuer Produktauswahl
             preparationTime = new Date();
             document.getElementById('preparationTime').value = preparationTime.toISOString().slice(0, 16);
             
@@ -2563,153 +2122,149 @@
         }
 
         function calculateExpiryDateTime(product) {
-            const hours = product.vorbereitet || product.anbruch || product.auftau || 24;
+            if (!product) return null;
+            const hours = product.vorbereitet || product.anbruch || product.auftau || 24; // Default to 24h if nothing specified
             const expiry = new Date(preparationTime.getTime() + hours * 60 * 60 * 1000);
             return expiry;
         }
 
         function formatDateTime(date) {
+            if (!date || !(date instanceof Date)) return { date: 'N/A', time: 'N/A' };
             return {
-                date: date.toLocaleDateString('de-DE'),
+                date: date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric'}),
                 time: date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
             };
         }
 
         function updatePreview() {
             const previewArea = document.getElementById('previewArea');
-            
-            if (!selectedProduct) {
-                previewArea.innerHTML = '';
+            if (!previewArea) return;
+
+            if (!selectedProduct || !currentUser) { // Also check for currentUser
+                previewArea.innerHTML = '<div class="preview-box" style="text-align:center; color: var(--text-muted);">Produkt auswählen</div>';
                 return;
             }
 
             const expiry = calculateExpiryDateTime(selectedProduct);
-            const formatted = formatDateTime(expiry);
-            const prepFormatted = formatDateTime(preparationTime);
+            const formattedExpiry = formatDateTime(expiry);
+            const formattedPrep = formatDateTime(preparationTime);
 
             previewArea.innerHTML = `
                 <div class="preview-box">
                     <h3 class="preview-title">Label-Vorschau:</h3>
                     <div class="preview-label">
                         <div class="preview-product-name">${selectedProduct.name}</div>
-                        <div class="preview-date">${prepFormatted.date}</div>
-                        <div class="preview-date">${formatted.date}</div>
-                        <div class="preview-date">${prepFormatted.time} - ${currentUser.shortcode}</div>
+                        <div class="preview-date">Zubereitet: ${formattedPrep.date} / ${formattedPrep.time}</div>
+                        <div class="preview-date" style="font-weight: bold; color: var(--primary-color-dark);">Haltbar bis: ${formattedExpiry.date} / ${formattedExpiry.time}</div>
+                        <div class="preview-date" style="font-size: 0.9em; margin-top: 0.5em;">Kürzel: ${currentUser.shortcode}</div>
                     </div>
                 </div>
             `;
         }
 
         function showSuccessNotification(message) {
-            // Bestehende Benachrichtigung entfernen
             const existing = document.querySelector('.success-notification');
-            if (existing) {
-                existing.remove();
-            }
+            if (existing) existing.remove();
 
-            // Neue Benachrichtigung erstellen
             const notification = document.createElement('div');
             notification.className = 'success-notification';
             notification.innerHTML = `✅ ${message}`;
-            
             document.body.appendChild(notification);
             
-            // Animation starten
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
+            setTimeout(() => notification.classList.add('show'), 50); // Slight delay for transition
             
-            // Nach 3 Sekunden ausblenden
             setTimeout(() => {
                 notification.classList.remove('show');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.remove();
-                    }
-                }, 300);
+                setTimeout(() => { if (notification.parentNode) notification.remove(); }, 400);
             }, 3000);
         }
 
         function updatePrintButton() {
             const printButton = document.getElementById('printButton');
             const printText = document.getElementById('printText');
+            if(!printButton || !printText) return;
             
             if (selectedProduct) {
-                printButton.className = 'print-button enabled';
+                printButton.className = 'button-base button-primary print-button enabled';
                 printText.textContent = `${quantity} Label${quantity > 1 ? 's' : ''} drucken`;
             } else {
-                printButton.className = 'print-button disabled';
-                printText.textContent = '1 Label drucken';
+                printButton.className = 'button-base print-button disabled';
+                printText.textContent = 'Label drucken'; // Generic text when disabled
             }
         }
 
         async function printLabel() {
-            if (!selectedProduct) return;
+            if (!selectedProduct || !currentUser) return;
             
             const expiry = calculateExpiryDateTime(selectedProduct);
-            const formatted = formatDateTime(expiry);
             const prepFormatted = formatDateTime(preparationTime);
+            const expiryFormatted = formatDateTime(expiry);
             
             const labelData = {
                 productName: selectedProduct.name,
                 preparationDate: prepFormatted.date,
-                expiryDate: formatted.date,
                 preparationTime: prepFormatted.time,
+                expiryDate: expiryFormatted.date,
+                expiryTime: expiryFormatted.time, // Added expiryTime for more detailed labels
                 userShortcode: currentUser.shortcode,
                 quantity: quantity,
-                user: currentUser.pin
+                userPin: currentUser.pin // Changed from user to userPin for clarity
             };
 
-            if (typeof require !== 'undefined') {
+            if (typeof require !== 'undefined') { // Electron environment
                 try {
                     const { ipcRenderer } = require('electron');
                     const result = await ipcRenderer.invoke('print-label', labelData);
                     
                     if (result && result.success) {
-                        if (result.method === 'file') {
-                            alert(`✅ ${result.message}`);
-                        } else if (result.method === 'raw') {
-                            showSuccessNotification(`${quantity} Label(s) direkt gedruckt auf ${result.printer}`);
-                        } else if (result.method === 'commandline') {
-                            showSuccessNotification(`${quantity} Label(s) über System gedruckt`);
-                        } else {
-                            showSuccessNotification(`${quantity} Label(s) erfolgreich gedruckt`);
-                        }
+                        showSuccessNotification(`${quantity} Label(s) ${result.message || 'erfolgreich gedruckt'}.`);
                     } else {
-                        alert(`❌ Druckfehler: ${result ? result.error : 'Unbekannter Fehler'}`);
+                        alert(`❌ Druckfehler: ${result ? result.error : 'Unbekannter Fehler beim Drucken.'}`);
                     }
                 } catch (error) {
-                    alert(`❌ Verbindungsfehler: ${error.message}`);
-                    openBrowserPrint(labelData);
+                    console.error("IPC Error:", error);
+                    alert(`❌ Verbindungsfehler zum Druckdienst: ${error.message}`);
+                    // Fallback to browser print if IPC fails catastrophically
+                    // openBrowserPrint(labelData);
                 }
-            } else {
+            } else { // Browser environment (fallback)
                 openBrowserPrint(labelData);
             }
         }
 
         function openBrowserPrint(labelData) {
-            const printWindow = window.open('', '_blank');
+            const printWindow = window.open('', '_blank', 'width=300,height=300');
+            if (!printWindow) {
+                alert('Bitte Pop-up Blocker für diese Seite deaktivieren, um Labels drucken zu können.');
+                return;
+            }
             const labelHtml = generateBrowserPrintHTML(labelData);
             
             printWindow.document.write(labelHtml);
             printWindow.document.close();
             printWindow.focus();
-            printWindow.print();
+            // Delay print command to allow content to render
+            setTimeout(() => {
+                printWindow.print();
+                // printWindow.close(); // Optional: close after printing
+            }, 500);
         }
 
         function generateBrowserPrintHTML(labelData) {
             let labelsHtml = '';
             for (let i = 0; i < labelData.quantity; i++) {
                 labelsHtml += `
-                    <div class="label">
-                        <div class="product-name">${labelData.productName}</div>
-                        <div class="date-info">${labelData.preparationDate}</div>
-                        <div class="date-info">${labelData.expiryDate}</div>
-                        <div class="date-info">${labelData.preparationTime} - ${labelData.userShortcode}</div>
+                    <div class="label-print">
+                        <div class="product-name-print">${labelData.productName}</div>
+                        <div class="date-info-print">Zub.: ${labelData.preparationDate} ${labelData.preparationTime}</div>
+                        <div class="date-info-print">Verw.b.: ${labelData.expiryDate} ${labelData.expiryTime}</div>
+                        <div class="user-info-print">${labelData.userShortcode}</div>
                     </div>
                 `;
             }
 
+            // Standard 58mm thermal paper, adjust font sizes for it.
+            // Roughly 20-24 characters per line with common fonts at 10-12pt.
             return `
                 <!DOCTYPE html>
                 <html>
@@ -2717,12 +2272,48 @@
                     <meta charset="utf-8">
                     <title>Label - ${labelData.productName}</title>
                     <style>
-                        @page { size: 58mm auto; margin: 2mm; }
-                        body { font-family: 'Courier New', monospace; font-size: 12px; margin: 0; padding: 2mm; text-align: center; }
-                        .label { width: 54mm; margin-bottom: 5mm; page-break-after: always; border: 1px dashed #999; padding: 3mm; }
-                        .product-name { font-size: 16px; font-weight: bold; margin-bottom: 3mm; text-transform: uppercase; }
-                        .date-info { font-size: 12px; margin: 2mm 0; font-weight: bold; }
-                        @media print { .label { margin: 0; border: none; page-break-after: always; padding: 2mm; } }
+                        @page {
+                            size: 57mm 25mm; /* Common label size, adjust as needed */
+                            margin: 1mm;
+                        }
+                        body {
+                            font-family: Arial, sans-serif; /* Sans-serif is often clearer on thermal */
+                            font-size: 8pt; /* Smaller base font for small labels */
+                            margin: 0;
+                            padding: 0;
+                            text-align: center;
+                        }
+                        .label-print {
+                            width: 55mm; /* Full width within margins */
+                            height: 23mm; /* Full height */
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            page-break-after: always; /* Each label on a new page/cut */
+                            /* border: 1px dashed #ccc; /* For testing layout */
+                        }
+                        .product-name-print {
+                            font-size: 10pt; /* Larger for product name */
+                            font-weight: bold;
+                            margin-bottom: 1mm;
+                            text-transform: uppercase;
+                            line-height: 1.1;
+                        }
+                        .date-info-print {
+                            font-size: 8pt;
+                            margin: 0.5mm 0;
+                            font-weight: normal; /* Normal weight for dates */
+                            line-height: 1.1;
+                        }
+                        .user-info-print {
+                            font-size: 7pt;
+                            margin-top: 1mm;
+                            font-weight: bold;
+                        }
+                        @media print {
+                            .label-print { border: none; }
+                        }
                     </style>
                 </head>
                 <body>
@@ -2734,4 +2325,3 @@
     </script>
 </body>
 </html>
-                
