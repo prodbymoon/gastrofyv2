@@ -1187,31 +1187,11 @@
             </div>
         </div>
 
-        <!-- Backup Section -->
-        <div class="backup-section">
-            <h3 class="backup-title">
-                💾 Backup & Wiederherstellung
-            </h3>
-            <div class="backup-buttons">
-                <button class="backup-button" onclick="createBackup()">
-                    📦 Backup erstellen
-                </button>
-                <button class="backup-button restore" onclick="document.getElementById('restoreFile').click()">
-                    📥 Backup wiederherstellen
-                </button>
-            </div>
-            <input type="file" id="restoreFile" class="file-input" accept=".json" onchange="restoreBackup(event)">
-            <div class="backup-info">
-                <strong>Backup enthält:</strong> Alle Benutzerprofile, Kategorien, Produkte und Einstellungen<br>
-                <strong>Tipp:</strong> Erstellen Sie regelmäßig Backups vor wichtigen Änderungen
-            </div>
-            <div id="backupStatus" class="backup-status"></div>
-        </div>
-
         <!-- Admin Navigation -->
         <div class="admin-tabs">
             <button class="admin-tab active" onclick="showAdminTab('users')">👤 Benutzer</button>
             <button class="admin-tab" onclick="showAdminTab('products')">📦 Produkte</button>
+            <button class="admin-tab" onclick="showAdminTab('backups')">💾 Backups</button>
         </div>
 
         <!-- Users Tab -->
@@ -1360,6 +1340,29 @@
                         Tipp: Mindestens ein Haltbarkeitswert muss angegeben werden.
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Backups Tab -->
+        <div id="adminBackupsTab" class="tab-content">
+            <div class="backup-section" style="margin-bottom: 0; border: none; background: none; padding: 1rem 0;"> <!-- Adjusted styles for tab content -->
+                <h3 class="backup-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;"> <!-- Larger title for tab context -->
+                    💾 Backup & Wiederherstellung
+                </h3>
+                <div class="backup-buttons">
+                    <button class="backup-button" onclick="createBackup()">
+                        📦 Backup erstellen
+                    </button>
+                    <button class="backup-button restore" onclick="document.getElementById('restoreFile').click()">
+                        📥 Backup wiederherstellen
+                    </button>
+                </div>
+                <input type="file" id="restoreFile" class="file-input" accept=".json" onchange="restoreBackup(event)">
+                <div class="backup-info" style="margin-top: 1.5rem;">
+                    <strong>Backup enthält:</strong> Alle Benutzerprofile, Kategorien, Produkte und Einstellungen<br>
+                    <strong>Tipp:</strong> Erstellen Sie regelmäßig Backups vor wichtigen Änderungen
+                </div>
+                <div id="backupStatus" class="backup-status" style="margin-top: 1.5rem;"></div>
             </div>
         </div>
     </div>
@@ -1820,12 +1823,13 @@
             });
             
             // Finde den richtigen Tab-Button
-            const targetTab = Array.from(document.querySelectorAll('.admin-tab')).find(tab => 
-                (tabName === 'users' && tab.textContent.includes('Benutzer')) ||
-                (tabName === 'products' && tab.textContent.includes('Produkte'))
-            );
-            if (targetTab) {
-                targetTab.classList.add('active');
+            const targetTabButton = Array.from(document.querySelectorAll('.admin-tab')).find(tab => {
+                const tabKey = tab.getAttribute('onclick').match(/'([^']+)'/)[1];
+                return tabKey === tabName;
+            });
+
+            if (targetTabButton) {
+                targetTabButton.classList.add('active');
             }
 
             // Tab-Inhalte verstecken/zeigen
@@ -1839,10 +1843,13 @@
                 document.getElementById('newUserPin').focus();
             } else if (tabName === 'products') {
                 document.getElementById('adminProductsTab').classList.add('active');
-                // Zurück zu Kategorien-Ansicht
+                // Ensure categories view is shown by default for products tab
                 document.getElementById('categoryProductsEditor').classList.remove('active');
-                document.getElementById('categoriesTab').classList.add('active');
+                document.getElementById('categoriesTab').classList.add('active'); // Make sure this is active
                 updateCategoryGrid();
+            } else if (tabName === 'backups') {
+                document.getElementById('adminBackupsTab').classList.add('active');
+                // Any specific actions for backup tab can be added here
             }
         }
 
