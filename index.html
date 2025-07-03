@@ -1,0 +1,2723 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gastrofy v2.0.5</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            min-height: 100vh;
+            height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Login Screen */
+        .login-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            padding: 3rem;
+            text-align: center;
+            min-width: 420px;
+            max-width: 500px;
+            backdrop-filter: blur(20px);
+        }
+
+        .login-title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #10b981, #047857);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            font-size: 1.3rem;
+            color: #374151;
+            margin-bottom: 3rem;
+            font-weight: 600;
+        }
+
+        .pin-input {
+            width: 100%;
+            padding: 1.5rem;
+            font-size: 2rem;
+            text-align: center;
+            border: 3px solid #d1fae5;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: #f0fdf4;
+        }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+            background: white;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .admin-button {
+            width: 100%;
+            padding: 1rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .admin-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        .made-by {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            border: 2px solid #fecaca;
+        }
+
+        /* Admin Panel */
+        .admin-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            padding: 2.5rem;
+            min-width: 650px;
+            max-width: 850px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #d1fae5;
+        }
+
+        .admin-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #10b981, #047857);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-button {
+            padding: 0.75rem 1.5rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .user-card {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #d1fae5;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .user-pin {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .user-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .add-user-section {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px dashed #10b981;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .add-user-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-user-input {
+            width: 120px;
+            padding: 1rem;
+            font-size: 1.3rem;
+            text-align: center;
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            margin-right: 1rem;
+            letter-spacing: 0.3rem;
+            font-weight: bold;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .add-user-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .add-user-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .add-user-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Product Admin Panel */
+        .product-admin-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            padding: 2.5rem;
+            min-width: 900px;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #d1fae5;
+        }
+
+        .admin-tab {
+            padding: 1rem 2rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-tab.active {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border-color: #10b981;
+        }
+
+        .admin-tab:hover:not(.active) {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Scrollbares Admin-Produkts-Tab */
+        #adminProductsTab {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        #adminProductsTab .tab-content {
+            display: block; /* Immer sichtbar innerhalb des Admin-Produkts-Tabs */
+        }
+
+        #adminProductsTab .tab-content.active {
+            display: block;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #d1fae5;
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .category-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 1rem;
+        }
+
+        .product-count {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: 2px solid #d1fae5;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #f0fdf4;
+            color: #047857;
+        }
+
+        .btn-edit:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .product-mini-list {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .product-mini-item {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .add-category-section {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px dashed #10b981;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group-inline {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #047857;
+        }
+
+        .input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .input-small {
+            width: 100px;
+            padding: 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #d1fae5;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #047857;
+        }
+
+        .close-button {
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+
+        .product-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-item-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .product-item-admin:hover {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name-admin {
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 0.25rem;
+        }
+
+        .product-specs {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .product-editor-list {
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+
+        .product-editor-item {
+            background: white;
+            border: 2px solid #d1fae5;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .product-editor-item:hover {
+            border-color: #10b981;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .product-editor-form {
+            width: 100%;
+        }
+
+        .product-editor-form .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .product-editor-form .form-group-inline {
+            min-width: 120px;
+            flex: 1;
+        }
+
+        .product-editor-form .form-group-inline:last-child {
+            flex: 0 0 auto;
+        }
+
+        .save-product-btn {
+            background: #f0fdf4 !important;
+            color: #047857 !important;
+            border-color: #d1fae5 !important;
+        }
+
+        .save-product-btn:hover {
+            background: #dcfce7 !important;
+            border-color: #10b981 !important;
+        }
+
+        .delete-product-btn {
+            background: #fef2f2 !important;
+            color: #dc2626 !important;
+            border-color: #fecaca !important;
+        }
+
+        .delete-product-btn:hover {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* Backup Section Styles */
+        .backup-section {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 2px solid #3b82f6;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .backup-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .backup-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .backup-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .backup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .backup-button.restore {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .backup-button.restore:hover {
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .backup-info {
+            font-size: 0.9rem;
+            color: #374151;
+            margin-top: 1rem;
+            line-height: 1.5;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .backup-status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .backup-status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .backup-status.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 2px solid #ef4444;
+        }
+
+        /* Main App */
+        .app-container {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info-bar {
+            background: white;
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+            border: 2px solid #d1fae5;
+            flex-shrink: 0;
+        }
+
+        .current-user {
+            font-weight: bold;
+            color: #047857;
+            font-size: 1.1rem;
+        }
+
+        .logout-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .product-admin-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+
+        .product-admin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            flex: 1;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.1);
+            padding: 1.5rem;
+            border: 2px solid #d1fae5;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            color: #047857;
+            flex-shrink: 0;
+        }
+        
+        .scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 0.5rem;
+            min-height: 0;
+        }
+        
+        .category-button {
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .category-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #047857;
+        }
+        
+        .product-list {
+            display: none;
+            margin-bottom: 0.75rem;
+        }
+        
+        .product-list.active {
+            display: block;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 0.75rem;
+        }
+        
+        .back-to-categories {
+            padding: 0.5rem 1rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-to-categories:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: translateX(-2px);
+        }
+        
+        .category-view {
+            display: block;
+        }
+        
+        .products-view {
+            display: none;
+        }
+        
+        .product-item {
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            transform: translateY(-1px);
+        }
+        
+        .product-item.selected {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+        }
+        
+        .product-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #047857;
+        }
+        
+        .product-info {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .product-info .haltbar {
+            color: #10b981;
+            font-weight: 700;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .quantity-button {
+            padding: 0.75rem;
+            background: #f0fdf4;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #047857;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .quantity-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: scale(1.05);
+        }
+        
+        .quantity-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            width: 4rem;
+            text-align: center;
+            color: #047857;
+        }
+        
+        .preview-box {
+            border: 2px dashed #10b981;
+            padding: 1rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            margin-bottom: 1rem;
+        }
+        
+        .preview-title {
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            color: #047857;
+        }
+        
+        .preview-label {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid #d1fae5;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.1);
+        }
+        
+        .preview-product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            color: #047857;
+        }
+        
+        .preview-date {
+            font-size: 0.95rem;
+            margin: 0.4rem 0;
+            color: #374151;
+            font-weight: 600;
+        }
+        
+        .print-button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .print-button.enabled {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .print-button.enabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+        
+        .print-button.disabled {
+            background: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .help-text {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Success Notification */
+        .success-notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .success-notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <h1 class="login-title">🏷️</h1>
+        <h2 class="login-subtitle">Gastrofy</h2>
+        
+        <div id="loginError" class="error-message hidden">
+            Ungültige PIN! Bitte versuchen Sie es erneut.
+        </div>
+        
+        <input 
+            type="number" 
+            id="pinInput" 
+            class="pin-input" 
+            placeholder="PIN"
+            maxlength="3"
+            min="0"
+            max="999"
+        >
+        
+        <button id="loginButton" class="login-button" onclick="login()">
+            Anmelden
+        </button>
+        
+        <button id="adminButton" class="admin-button" onclick="requestAdminAccess()">
+            🔐 Administrator-Bereich
+        </button>
+        
+        <div class="made-by">
+            made with love by Marius
+        </div>
+    </div>
+
+    <!-- Admin Password Screen -->
+    <div id="adminPasswordScreen" class="login-container hidden">
+        <h1 class="login-title">🔐</h1>
+        <h2 class="login-subtitle">Administrator-Zugang</h2>
+        
+        <div id="adminPasswordError" class="error-message hidden">
+            Falsches Admin-Passwort! Zugang verweigert.
+        </div>
+        
+        <input 
+            type="password" 
+            id="adminPasswordInput" 
+            class="pin-input" 
+            placeholder="Admin-Passwort"
+            style="letter-spacing: 0.2rem; font-size: 1.5rem;"
+        >
+        
+        <button id="adminLoginButton" class="login-button" onclick="verifyAdminPassword()">
+            Zugang gewähren
+        </button>
+        
+        <button class="admin-button" onclick="showLoginScreen()">
+            ← Zurück
+        </button>
+        
+        <div class="made-by" style="margin-top: 1rem;">
+            🛡️ Geschützter Bereich - Nur für Administratoren
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-container hidden">
+        <div class="admin-header">
+            <h2 class="admin-title">🔐 Administrator-Bereich</h2>
+            <div>
+                <button class="back-button" style="margin-right: 1rem;" onclick="showAdminSettings()">
+                    ⚙️ Einstellungen
+                </button>
+                <button class="back-button" onclick="logoutAdmin()">
+                    ← Abmelden
+                </button>
+            </div>
+        </div>
+
+        <!-- Backup Section -->
+        <div class="backup-section">
+            <h3 class="backup-title">
+                💾 Backup & Wiederherstellung
+            </h3>
+            <div class="backup-buttons">
+                <button class="backup-button" onclick="createBackup()">
+                    📦 Backup erstellen
+                </button>
+                <button class="backup-button restore" onclick="document.getElementById('restoreFile').click()">
+                    📥 Backup wiederherstellen
+                </button>
+            </div>
+            <input type="file" id="restoreFile" class="file-input" accept=".json" onchange="restoreBackup(event)">
+            <div class="backup-info">
+                <strong>Backup enthält:</strong> Alle Benutzerprofile, Kategorien, Produkte und Einstellungen<br>
+                <strong>Tipp:</strong> Erstellen Sie regelmäßig Backups vor wichtigen Änderungen
+            </div>
+            <div id="backupStatus" class="backup-status"></div>
+        </div>
+
+        <!-- Admin Navigation -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="showAdminTab('users')">👤 Benutzer</button>
+            <button class="admin-tab" onclick="showAdminTab('products')">📦 Produkte</button>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="adminUsersTab" class="tab-content active">
+            <div class="user-grid" id="userGrid">
+                <!-- Users populated by JavaScript -->
+            </div>
+
+            <div class="add-user-section">
+                <h3 class="add-user-title">Neuen Benutzer hinzufügen</h3>
+                <div style="display: flex; gap: 1rem; align-items: center; justify-content: center; flex-wrap: wrap;">
+                    <input 
+                        type="number" 
+                        id="newUserPin" 
+                        class="add-user-input" 
+                        placeholder="PIN"
+                        maxlength="3"
+                        min="0"
+                        max="999"
+                        style="width: 120px;"
+                    >
+                    <input 
+                        type="text" 
+                        id="newUserShortcode" 
+                        class="add-user-input" 
+                        placeholder="Kürzel"
+                        maxlength="3"
+                        style="width: 120px; text-transform: uppercase;"
+                    >
+                    <button id="addUserButton" class="add-user-button" onclick="addUser()">
+                        Hinzufügen
+                    </button>
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #22543d;">
+                    Kürzel: 2-3 Buchstaben (z.B. MX, AB, JD)
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Tab in Admin Panel -->
+        <div id="adminProductsTab" class="tab-content">
+            <!-- Categories Tab -->
+            <div id="categoriesTab" class="tab-content active">
+                <div class="category-grid" id="categoryGrid">
+                    <!-- Categories populated by JavaScript -->
+                </div>
+
+                <div class="add-category-section">
+                    <h3 class="add-user-title">Neue Kategorie hinzufügen</h3>
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label class="label">Kategorie-Name:</label>
+                            <input 
+                                type="text" 
+                                id="newCategoryName" 
+                                class="input" 
+                                placeholder="z.B. Neue Kategorie"
+                            >
+                        </div>
+                        <button class="add-user-button" onclick="addCategory()">
+                            Kategorie hinzufügen
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Products Editor -->
+            <div id="categoryProductsEditor" class="tab-content">
+                <div class="category-header">
+                    <button class="back-to-categories" onclick="backToCategoriesFromEditor()">
+                        ← Zurück zu Kategorien
+                    </button>
+                    <h3 class="category-title">Produkte bearbeiten: <span id="editorCategoryName"></span></h3>
+                </div>
+
+                <div class="product-editor-list" id="categoryProductsList">
+                    <!-- Products populated by JavaScript -->
+                </div>
+
+                <div class="add-category-section">
+                    <h3 class="add-user-title">Neues Produkt hinzufügen</h3>
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label class="label">Produktname:</label>
+                            <input 
+                                type="text" 
+                                id="newCategoryProductName" 
+                                class="input" 
+                                placeholder="z.B. Neues Produkt"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Auftau (h):</label>
+                            <input 
+                                type="number" 
+                                id="newCategoryProductAuftau" 
+                                class="input input-small" 
+                                placeholder="24"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Vorbereitet (h):</label>
+                            <input 
+                                type="number" 
+                                id="newCategoryProductVorbereitet" 
+                                class="input input-small" 
+                                placeholder="48"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Anbruch (h):</label>
+                            <input 
+                                type="number" 
+                                id="newCategoryProductAnbruch" 
+                                class="input input-small" 
+                                placeholder="120"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Umgefüllt (h):</label>
+                            <input 
+                                type="number" 
+                                id="newCategoryProductUmgefuellt" 
+                                class="input input-small" 
+                                placeholder="24"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Lager:</label>
+                            <select id="newCategoryProductLager" class="input">
+                                <option value="Gekühlt">Gekühlt</option>
+                                <option value="Trockenlager">Trockenlager</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-top: 1rem;">
+                        <button class="add-user-button" onclick="addNewProductToCategory()">
+                            Produkt hinzufügen
+                        </button>
+                    </div>
+                    <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #22543d;">
+                        Tipp: Mindestens ein Haltbarkeitswert muss angegeben werden.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Settings Modal -->
+    <div id="adminSettingsModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Administrator-Einstellungen</h3>
+                <button class="close-button" onclick="closeAdminSettings()">✕</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="label">Admin-Passwort ändern:</label>
+                <input type="password" id="currentAdminPassword" class="input" placeholder="Aktuelles Passwort">
+            </div>
+            
+            <div class="form-group">
+                <label class="label">Neues Passwort:</label>
+                <input type="password" id="newAdminPassword" class="input" placeholder="Neues Passwort">
+            </div>
+            
+            <div class="form-group">
+                <label class="label">Passwort bestätigen:</label>
+                <input type="password" id="confirmAdminPassword" class="input" placeholder="Passwort wiederholen">
+            </div>
+            
+            <div class="form-row" style="margin-top: 1.5rem;">
+                <button class="add-user-button" onclick="changeAdminPassword()">
+                    Passwort ändern
+                </button>
+                <button class="back-button" onclick="closeAdminSettings()">
+                    Abbrechen
+                </button>
+            </div>
+            
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #d1fae5;">
+                <h4 style="color: #047857; margin-bottom: 1rem;">Aktuelles Passwort:</h4>
+                <div style="font-family: monospace; background: #f0fdf4; padding: 1rem; border-radius: 10px; color: #22543d; word-break: break-all;" id="currentPasswordDisplay">
+                    ${ADMIN_PASSWORD}
+                </div>
+                <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">
+                    Standard-Passwort: admin2024
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="app-container hidden">
+        <div class="container">
+            <div class="user-info-bar">
+                <div>
+                    <span class="current-user">Angemeldet als: <strong>${currentUser.shortcode}</strong> (PIN ${currentUser.pin})</span>
+                </div>
+                <div>
+                    <button class="logout-button" onclick="logout()">
+                        Abmelden
+                    </button>
+                </div>
+            </div>
+
+            <h1 class="title">🏷️ Gastrofy</h1>
+            
+            <div class="grid">
+                <div class="card">
+                    <h2 class="card-title">
+                        🔍 Produktauswahl
+                    </h2>
+                    
+                    <div class="scroll-area" id="productArea">
+                        <div id="categoryView" class="category-view">
+                            <!-- Categories populated by JavaScript -->
+                        </div>
+                        <div id="productsView" class="products-view">
+                            <div class="category-header">
+                                <button class="back-to-categories" onclick="showCategories()">
+                                    ← Zurück
+                                </button>
+                                <h3 class="category-title" id="currentCategoryTitle"></h3>
+                            </div>
+                            <div id="productsList">
+                                <!-- Products populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <h2 class="card-title">
+                        📅 Label-Einstellungen
+                    </h2>
+                    
+                    <div style="flex: 1; overflow-y: auto; padding-right: 0.5rem;">
+                        <div class="form-group">
+                            <label class="label">Vorbereitungszeit (optional anpassen):</label>
+                            <input type="datetime-local" id="preparationTime" class="input">
+                            <div class="help-text">Standard: Aktuelle Zeit. Nur ändern wenn nötig.</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label">Anzahl Labels:</label>
+                            <div class="quantity-controls">
+                                <button class="quantity-button" onclick="changeQuantity(-1)">−</button>
+                                <span class="quantity-display" id="quantity">1</span>
+                                <button class="quantity-button" onclick="changeQuantity(1)">+</button>
+                            </div>
+                        </div>
+                        
+                        <div id="previewArea"></div>
+                    </div>
+                    
+                    <button id="printButton" class="print-button disabled" onclick="printLabel()" style="flex-shrink: 0;">
+                        🖨️ <span id="printText">1 Label drucken</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Backup und Restore Funktionen
+        function createBackup() {
+            const backupData = {
+                version: "1.0",
+                timestamp: new Date().toISOString(),
+                users: users,
+                products: products,
+                adminPassword: ADMIN_PASSWORD,
+                appName: "Gastrofy Label Generator"
+            };
+
+            const backupJson = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([backupJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const filename = `gastrofy_backup_${timestamp}.json`;
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showBackupStatus(`✅ Backup erfolgreich erstellt: ${filename}`, 'success');
+        }
+
+        function restoreBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Validierung des Backup-Formats
+                    if (!backupData.version || !backupData.users || !backupData.products) {
+                        throw new Error('Ungültiges Backup-Format');
+                    }
+
+                    // Bestätigung vom Benutzer
+                    const confirmMessage = `Backup wiederherstellen?\n\nBackup vom: ${new Date(backupData.timestamp).toLocaleString()}\nBenutzer: ${backupData.users.length}\nKategorien: ${Object.keys(backupData.products).length}\n\n⚠️ WARNUNG: Alle aktuellen Daten werden überschrieben!`;
+                    
+                    if (!confirm(confirmMessage)) {
+                        event.target.value = ''; // Reset file input
+                        return;
+                    }
+
+                    // Daten wiederherstellen
+                    users = backupData.users;
+                    products = backupData.products;
+                    
+                    if (backupData.adminPassword) {
+                        localStorage.setItem('labelGeneratorAdminPassword', backupData.adminPassword);
+                    }
+
+                    // Speichern
+                    saveUsers();
+                    saveProducts();
+                    
+                    // UI aktualisieren
+                    updateUserGrid();
+                    updateCategoryGrid();
+                    renderCategories();
+                    
+                    // Admin-Passwort Display aktualisieren
+                    const passwordDisplay = document.getElementById('currentPasswordDisplay');
+                    if (passwordDisplay) {
+                        passwordDisplay.textContent = localStorage.getItem('labelGeneratorAdminPassword') || 'admin2024';
+                    }
+                    
+                    showBackupStatus(`✅ Backup erfolgreich wiederhergestellt! ${backupData.users.length} Benutzer und ${Object.keys(backupData.products).length} Kategorien geladen.`, 'success');
+                    
+                } catch (error) {
+                    console.error('Backup restore error:', error);
+                    showBackupStatus(`❌ Fehler beim Wiederherstellen: ${error.message}`, 'error');
+                }
+                
+                // Reset file input
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function showBackupStatus(message, type) {
+            const statusDiv = document.getElementById('backupStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = `backup-status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Benutzerverwaltung
+        let users = JSON.parse(localStorage.getItem('labelGeneratorUsers')) || [
+            { pin: '123', shortcode: 'MX', created: new Date().toLocaleDateString() },
+            { pin: '456', shortcode: 'AB', created: new Date().toLocaleDateString() }
+        ];
+        let currentUser = null;
+
+        // Admin-System
+        const ADMIN_PASSWORD = localStorage.getItem('labelGeneratorAdminPassword') || 'admin2024';
+        let isAdminAuthenticated = false;
+
+        // Produktdaten - jetzt aus localStorage geladen
+        let products = JSON.parse(localStorage.getItem('labelGeneratorProducts')) || {
+            'Fleisch': [
+                { name: 'Bacon', auftau: 24, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'BBQ Rib', auftau: 24, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Chicken Fajita', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Chicken Tandoori', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Chicken Teriyaki', auftau: 48, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Ham', auftau: 48, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Nacho Chicken Bites', auftau: 48, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Peperoni-Salami', auftau: 48, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Philly Beef', auftau: 48, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Rotisserie-Style Chicken', auftau: 48, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Salami', auftau: 48, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Spicy Vegan Patty', auftau: 24, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Taco Beef', auftau: 48, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Tuna Mix', auftau: null, vorbereitet: 72, lager: 'Gekühlt' }
+            ],
+            'Gemüse': [
+                { name: 'Caramelized Onions', auftau: 24, vorbereitet: 120, lager: 'Gekühlt' },
+                { name: 'Eisbergsalat', auftau: null, vorbereitet: 24, lager: 'Gekühlt' },
+                { name: 'Gewürzgurken', auftau: null, vorbereitet: 120, lager: 'Gekühlt' },
+                { name: 'Guacamole', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Gurken', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Jalapeños', auftau: null, vorbereitet: 120, lager: 'Gekühlt' },
+                { name: 'Mais', auftau: null, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Oliven', auftau: null, vorbereitet: 120, lager: 'Gekühlt' },
+                { name: 'Rote Paprika', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Rucola', auftau: null, vorbereitet: 24, lager: 'Gekühlt' },
+                { name: 'Tomaten', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Zwiebeln', auftau: null, vorbereitet: 48, lager: 'Gekühlt' }
+            ],
+            'Käse & Ei': [
+                { name: 'Cheddar', auftau: null, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Frischkäse', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Mozzarella Scheiben', auftau: 48, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Mozzarella-Emmental-Mix', auftau: 24, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Omelette', auftau: null, vorbereitet: 48, lager: 'Gekühlt' },
+                { name: 'Schmelzkäsescheiben', auftau: null, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Vegan Slices', auftau: null, vorbereitet: 72, lager: 'Gekühlt' }
+            ],
+            'Saucen': [
+                { name: 'BBQ Sauce (vegan)', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Caesar', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Chipotle Southwest', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Garlic & Herb (vegan)', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Honey Wholegrain Mustard', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Hot Sauce', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Joghurt', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Lite Mayonnaise', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Sweet Onion', auftau: null, vorbereitet: 144, lager: 'Gekühlt' },
+                { name: 'Teriyaki Glaze', auftau: null, vorbereitet: 96, lager: 'Gekühlt' },
+                { name: 'X-spicy Chipotle Sauce', auftau: null, vorbereitet: 144, lager: 'Gekühlt' }
+            ],
+            'Gewürze': [
+                { name: 'Fajita-Gewürz', auftau: null, vorbereitet: null, anbruch: 5040, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Meersalz', auftau: null, vorbereitet: null, anbruch: 720, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Oregano', auftau: null, vorbereitet: null, anbruch: 720, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Pfefferkörner', auftau: null, vorbereitet: null, anbruch: 4320, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Röstwiebeln', auftau: null, vorbereitet: null, anbruch: 576, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Southwest-Gewürz', auftau: null, vorbereitet: null, anbruch: 5040, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Tikka-Gewürz', auftau: null, vorbereitet: null, anbruch: 5040, umgefüllt: null, lager: 'Trockenlager' }
+            ],
+            'Toppings': [
+                { name: 'Cheese Oregano Mix', auftau: null, vorbereitet: null, anbruch: 120, umgefüllt: 24, lager: 'Gekühlt' },
+                { name: 'Honey Oat', auftau: null, vorbereitet: null, anbruch: 360, umgefüllt: 24, lager: 'Trockenlager' },
+                { name: 'Sesam', auftau: null, vorbereitet: null, anbruch: 360, umgefüllt: 24, lager: 'Trockenlager' },
+                { name: 'Vollkorn', auftau: null, vorbereitet: null, anbruch: 360, umgefüllt: 24, lager: 'Trockenlager' },
+                { name: 'Zimt und Zucker', auftau: null, vorbereitet: null, anbruch: 672, umgefüllt: 48, lager: 'Trockenlager' }
+            ],
+            'Brot/Backprodukte': [
+                { name: 'Brot', auftau: null, vorbereitet: 192, lager: 'Trockenlager' },
+                { name: 'Cookies', auftau: 2, vorbereitet: 72, lager: 'Gekühlt' },
+                { name: 'Footlong Churro', auftau: 2, vorbereitet: 24, lager: 'Gekühlt' },
+                { name: 'Footlong Cookies', auftau: 2, vorbereitet: 168, lager: 'Gekühlt' },
+                { name: 'Wraps', auftau: 24, vorbereitet: 48, lager: 'Trockenlager' }
+            ],
+            'Drinks & Snacks': [
+                { name: 'Kaffee', auftau: null, vorbereitet: null, anbruch: 168, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Kakaopulver', auftau: null, vorbereitet: null, anbruch: 672, umgefüllt: null, lager: 'Trockenlager' },
+                { name: 'Milch', auftau: null, vorbereitet: null, anbruch: 72, umgefüllt: 24, lager: 'Gekühlt' },
+                { name: 'Waffle Fries', auftau: null, vorbereitet: 48, anbruch: null, umgefüllt: null, lager: 'Gekühlt' }
+            ]
+        };
+
+        // App State
+        let selectedProduct = null;
+        let preparationTime = new Date();
+        let quantity = 1;
+        let currentCategory = null;
+        let editingProductIndex = null;
+        let editingCategory = null;
+        let currentEditingCategory = null;
+
+        // Produktdaten speichern
+        function saveProducts() {
+            localStorage.setItem('labelGeneratorProducts', JSON.stringify(products));
+        }
+
+        // Initialisierung
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('pinInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+                if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            document.getElementById('adminPasswordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    verifyAdminPassword();
+                }
+            });
+
+            document.getElementById('pinInput').addEventListener('input', function(e) {
+                if (e.target.value.length > 3) {
+                    e.target.value = e.target.value.slice(0, 3);
+                }
+            });
+
+            document.getElementById('newUserPin').addEventListener('input', function(e) {
+                if (e.target.value.length > 3) {
+                    e.target.value = e.target.value.slice(0, 3);
+                }
+            });
+
+            document.getElementById('newUserPin').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('newUserShortcode').focus();
+                }
+            });
+
+            document.getElementById('newUserShortcode').addEventListener('input', function(e) {
+                // Nur Buchstaben erlauben und in Großbuchstaben umwandeln
+                e.target.value = e.target.value.replace(/[^A-Za-z]/g, '').toUpperCase();
+                if (e.target.value.length > 3) {
+                    e.target.value = e.target.value.slice(0, 3);
+                }
+            });
+
+            document.getElementById('newUserShortcode').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addUser();
+                }
+            });
+
+            saveUsers();
+            updateUserGrid();
+            showLoginScreen();
+        });
+
+        // Admin-Sicherheitssystem
+        let requestedAdminAction = null;
+
+        function requestAdminAccess(action = null) {
+            requestedAdminAction = action;
+            showAdminPasswordScreen();
+        }
+
+        function showAdminPasswordScreen() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminPasswordScreen').classList.remove('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('adminPasswordInput').focus();
+            hideAdminPasswordError();
+        }
+
+        function verifyAdminPassword() {
+            const enteredPassword = document.getElementById('adminPasswordInput').value;
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
+                isAdminAuthenticated = true;
+                document.getElementById('adminPasswordInput').value = '';
+                hideAdminPasswordError();
+                
+                // Führe die angeforderte Aktion aus
+                if (requestedAdminAction === 'products') {
+                    showAdminPanel('products');
+                } else {
+                    showAdminPanel('users');
+                }
+                requestedAdminAction = null;
+            } else {
+                showAdminPasswordError();
+                document.getElementById('adminPasswordInput').value = '';
+            }
+        }
+
+        function showAdminPasswordError() {
+            document.getElementById('adminPasswordError').classList.remove('hidden');
+            setTimeout(() => {
+                hideAdminPasswordError();
+            }, 3000);
+        }
+
+        function hideAdminPasswordError() {
+            document.getElementById('adminPasswordError').classList.add('hidden');
+        }
+
+        function logoutAdmin() {
+            isAdminAuthenticated = false;
+            requestedAdminAction = null;
+            showLoginScreen();
+        }
+
+        function showAdminPanel(startTab = 'users') {
+            if (!isAdminAuthenticated) {
+                requestAdminAccess(startTab);
+                return;
+            }
+
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminPasswordScreen').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            
+            showAdminTab(startTab);
+        }
+
+        function showAdminTab(tabName) {
+            // Tab-Buttons aktualisieren
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Finde den richtigen Tab-Button
+            const targetTab = Array.from(document.querySelectorAll('.admin-tab')).find(tab => 
+                (tabName === 'users' && tab.textContent.includes('Benutzer')) ||
+                (tabName === 'products' && tab.textContent.includes('Produkte'))
+            );
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            // Tab-Inhalte verstecken/zeigen
+            document.querySelectorAll('#adminPanel .tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            if (tabName === 'users') {
+                document.getElementById('adminUsersTab').classList.add('active');
+                updateUserGrid();
+                document.getElementById('newUserPin').focus();
+            } else if (tabName === 'products') {
+                document.getElementById('adminProductsTab').classList.add('active');
+                // Zurück zu Kategorien-Ansicht
+                document.getElementById('categoryProductsEditor').classList.remove('active');
+                document.getElementById('categoriesTab').classList.add('active');
+                updateCategoryGrid();
+            }
+        }
+
+        function showAdminSettings() {
+            document.getElementById('adminSettingsModal').classList.remove('hidden');
+            document.getElementById('currentAdminPassword').focus();
+        }
+
+        function closeAdminSettings() {
+            document.getElementById('adminSettingsModal').classList.add('hidden');
+            // Felder leeren
+            document.getElementById('currentAdminPassword').value = '';
+            document.getElementById('newAdminPassword').value = '';
+            document.getElementById('confirmAdminPassword').value = '';
+        }
+
+        function changeAdminPassword() {
+            const currentPw = document.getElementById('currentAdminPassword').value;
+            const newPw = document.getElementById('newAdminPassword').value;
+            const confirmPw = document.getElementById('confirmAdminPassword').value;
+
+            if (currentPw !== ADMIN_PASSWORD) {
+                alert('Aktuelles Passwort ist falsch!');
+                return;
+            }
+
+            if (newPw.length < 4) {
+                alert('Neues Passwort muss mindestens 4 Zeichen lang sein!');
+                return;
+            }
+
+            if (newPw !== confirmPw) {
+                alert('Passwort-Bestätigung stimmt nicht überein!');
+                return;
+            }
+
+            // Passwort ändern
+            localStorage.setItem('labelGeneratorAdminPassword', newPw);
+            
+            // Aktualisiere die globale Variable (Seite muss neu geladen werden für vollständige Aktualisierung)
+            alert(`Passwort erfolgreich geändert!\n\nNeues Passwort: ${newPw}\n\nBitte notieren Sie sich das neue Passwort.`);
+            
+            closeAdminSettings();
+            showSuccessNotification('Admin-Passwort wurde geändert!');
+        }
+
+        // Benutzerverwaltung
+        function saveUsers() {
+            localStorage.setItem('labelGeneratorUsers', JSON.stringify(users));
+        }
+
+        function login() {
+            const pin = document.getElementById('pinInput').value;
+            const user = users.find(u => u.pin === pin);
+            
+            if (user && pin.length === 3) {
+                currentUser = user;
+                showMainApp();
+                hideLoginError();
+            } else {
+                showLoginError();
+                document.getElementById('pinInput').value = '';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            selectedProduct = null;
+            currentCategory = null;
+            document.getElementById('pinInput').value = '';
+            showLoginScreen();
+        }
+
+        function showLoginError() {
+            document.getElementById('loginError').classList.remove('hidden');
+            setTimeout(() => {
+                hideLoginError();
+            }, 3000);
+        }
+
+        function hideLoginError() {
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('adminPasswordScreen').classList.add('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('pinInput').focus();
+            
+            // Admin-Status zurücksetzen beim Logout
+            isAdminAuthenticated = false;
+            requestedAdminAction = null;
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminPasswordScreen').classList.add('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            // Benutzer-Info aktualisieren
+            const userInfoBar = document.querySelector('.user-info-bar div');
+            userInfoBar.innerHTML = `<span class="current-user">Angemeldet als: <strong>${currentUser.shortcode}</strong> (PIN ${currentUser.pin})</span>`;
+            
+            // Aktualisiere Zeit bei jedem Login
+            preparationTime = new Date();
+            
+            initializeMainApp();
+        }
+
+        function updateUserGrid() {
+            const userGrid = document.getElementById('userGrid');
+            userGrid.innerHTML = '';
+
+            users.forEach((user, index) => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                
+                // Benutzer-Inhalt
+                const userContent = document.createElement('div');
+                userContent.innerHTML = `
+                    <div class="user-pin">${user.pin}</div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #2563eb; margin: 0.5rem 0;">${user.shortcode}</div>
+                    <div class="user-info">Erstellt: ${user.created}</div>
+                `;
+                
+                // Delete-Button erstellen
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-button';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.title = 'Benutzer löschen';
+                deleteBtn.style.position = 'absolute';
+                deleteBtn.style.top = '0.5rem';
+                deleteBtn.style.right = '0.5rem';
+                deleteBtn.style.background = '#fc8181';
+                deleteBtn.style.color = 'white';
+                deleteBtn.style.border = 'none';
+                deleteBtn.style.borderRadius = '50%';
+                deleteBtn.style.width = '30px';
+                deleteBtn.style.height = '30px';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.style.fontWeight = 'bold';
+                deleteBtn.style.fontSize = '16px';
+                
+                // Event-Listener hinzufügen
+                deleteBtn.onclick = function() {
+                    deleteUserByIndex(index, user);
+                };
+                
+                // Hover-Effekt
+                deleteBtn.onmouseenter = function() {
+                    this.style.background = '#f56565';
+                };
+                deleteBtn.onmouseleave = function() {
+                    this.style.background = '#fc8181';
+                };
+                
+                userCard.appendChild(userContent);
+                userCard.appendChild(deleteBtn);
+                userGrid.appendChild(userCard);
+            });
+        }
+
+        function deleteUserByIndex(index, user) {
+            if (users.length <= 1) {
+                alert('Mindestens ein Benutzer muss vorhanden sein!');
+                return;
+            }
+
+            if (confirm(`Benutzer ${user.shortcode} (PIN ${user.pin}) wirklich löschen?`)) {
+                users.splice(index, 1);
+                saveUsers();
+                updateUserGrid();
+            }
+        }
+
+        function addUser() {
+            const newPin = document.getElementById('newUserPin').value;
+            const newShortcode = document.getElementById('newUserShortcode').value.toUpperCase();
+            
+            if (newPin.length !== 3) {
+                alert('PIN muss genau 3 Ziffern haben!');
+                return;
+            }
+
+            if (newShortcode.length < 2 || newShortcode.length > 3) {
+                alert('Kürzel muss 2-3 Buchstaben haben!');
+                return;
+            }
+
+            if (!/^[A-Z]+$/.test(newShortcode)) {
+                alert('Kürzel darf nur Buchstaben enthalten!');
+                return;
+            }
+
+            if (users.find(u => u.pin === newPin)) {
+                alert('Diese PIN existiert bereits!');
+                return;
+            }
+
+            if (users.find(u => u.shortcode === newShortcode)) {
+                alert('Dieses Kürzel existiert bereits!');
+                return;
+            }
+
+            users.push({
+                pin: newPin,
+                shortcode: newShortcode,
+                created: new Date().toLocaleDateString()
+            });
+
+            saveUsers();
+            updateUserGrid();
+            document.getElementById('newUserPin').value = '';
+            document.getElementById('newUserShortcode').value = '';
+            document.getElementById('newUserPin').focus();
+        }
+
+        // Produktverwaltung - jetzt über showTab ersetzt
+        function showTab(tabName) {
+            // Diese Funktion wird jetzt von showAdminTab ersetzt
+            if (tabName === 'categories') {
+                updateCategoryGrid();
+            }
+        }
+
+        function updateCategoryGrid() {
+            const categoryGrid = document.getElementById('categoryGrid');
+            categoryGrid.innerHTML = '';
+
+            Object.entries(products).forEach(([categoryName, items]) => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                
+                categoryCard.innerHTML = `
+                    <div class="category-name">${categoryName}</div>
+                    <div class="product-count">${items.length} Produkte</div>
+                    <div class="category-actions">
+                        <button class="btn-small btn-edit">✏️ Produkte bearbeiten</button>
+                        <button class="btn-small btn-delete">🗑️ Kategorie löschen</button>
+                    </div>
+                    <div class="product-mini-list">
+                        ${items.slice(0, 5).map(item => `<div class="product-mini-item">${item.name}</div>`).join('')}
+                        ${items.length > 5 ? `<div class="product-mini-item"><em>...und ${items.length - 5} weitere</em></div>` : ''}
+                    </div>
+                `;
+                
+                // Event-Handler direkt hinzufügen
+                const editBtn = categoryCard.querySelector('.btn-edit');
+                const deleteBtn = categoryCard.querySelector('.btn-delete');
+                
+                editBtn.addEventListener('click', () => showCategoryProductsEditor(categoryName));
+                deleteBtn.addEventListener('click', () => deleteCategory(categoryName));
+                
+                categoryGrid.appendChild(categoryCard);
+            });
+        }
+
+        function showCategoryProductsEditor(categoryName) {
+            // Verstecke Kategorien-Tab und zeige Produkt-Editor
+            document.getElementById('categoriesTab').classList.remove('active');
+            document.getElementById('categoryProductsEditor').classList.add('active');
+            
+            // Setze Kategorie-Titel
+            document.getElementById('editorCategoryName').textContent = categoryName;
+            currentEditingCategory = categoryName;
+            
+            // Lade Produktliste
+            loadCategoryProducts(categoryName);
+        }
+
+        function loadCategoryProducts(categoryName) {
+            const productList = document.getElementById('categoryProductsList');
+            const items = products[categoryName];
+            
+            // Leere die Liste
+            productList.innerHTML = '';
+            
+            // Erstelle Produktelemente
+            items.forEach((product, index) => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-editor-item';
+                
+                productDiv.innerHTML = `
+                    <div class="product-editor-form">
+                        <div class="form-row">
+                            <div class="form-group-inline">
+                                <label class="label">Produktname:</label>
+                                <input type="text" class="input product-name-input" value="${product.name}">
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label">Auftau (h):</label>
+                                <input type="number" class="input input-small product-auftau-input" value="${product.auftau || ''}" min="0">
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label">Vorbereitet (h):</label>
+                                <input type="number" class="input input-small product-vorbereitet-input" value="${product.vorbereitet || ''}" min="0">
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label">Anbruch (h):</label>
+                                <input type="number" class="input input-small product-anbruch-input" value="${product.anbruch || ''}" min="0">
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label">Umgefüllt (h):</label>
+                                <input type="number" class="input input-small product-umgefuellt-input" value="${product.umgefüllt || ''}" min="0">
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label">Lager:</label>
+                                <select class="input product-lager-input">
+                                    <option value="Gekühlt" ${product.lager === 'Gekühlt' ? 'selected' : ''}>Gekühlt</option>
+                                    <option value="Trockenlager" ${product.lager === 'Trockenlager' ? 'selected' : ''}>Trockenlager</option>
+                                </select>
+                            </div>
+                            <div class="form-group-inline">
+                                <label class="label">&nbsp;</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button class="btn-small btn-edit save-product-btn">💾 Speichern</button>
+                                    <button class="btn-small btn-delete delete-product-btn">🗑️ Löschen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Event-Handler für Speichern und Löschen
+                const saveBtn = productDiv.querySelector('.save-product-btn');
+                const deleteBtn = productDiv.querySelector('.delete-product-btn');
+                
+                saveBtn.addEventListener('click', () => saveProductChanges(categoryName, index, productDiv));
+                deleteBtn.addEventListener('click', () => deleteProductFromEditor(categoryName, index));
+                
+                productList.appendChild(productDiv);
+            });
+        }
+
+        function saveProductChanges(categoryName, index, productDiv) {
+            const nameInput = productDiv.querySelector('.product-name-input');
+            const auftauInput = productDiv.querySelector('.product-auftau-input');
+            const vorbereitetInput = productDiv.querySelector('.product-vorbereitet-input');
+            const anbruchInput = productDiv.querySelector('.product-anbruch-input');
+            const umgefuelltInput = productDiv.querySelector('.product-umgefuellt-input');
+            const lagerInput = productDiv.querySelector('.product-lager-input');
+            
+            const name = nameInput.value.trim();
+            if (!name) {
+                alert('Produktname darf nicht leer sein!');
+                return;
+            }
+            
+            const auftau = auftauInput.value;
+            const vorbereitet = vorbereitetInput.value;
+            const anbruch = anbruchInput.value;
+            
+            // Mindestens ein Haltbarkeitswert
+            if (!auftau && !vorbereitet && !anbruch) {
+                alert('Mindestens ein Haltbarkeitswert muss angegeben werden!');
+                return;
+            }
+            
+            // Prüfe Duplikate (außer dem aktuellen)
+            const existingIndex = products[categoryName].findIndex((p, i) => p.name === name && i !== index);
+            if (existingIndex !== -1) {
+                alert('Ein Produkt mit diesem Namen existiert bereits!');
+                return;
+            }
+            
+            // Speichere Änderungen
+            products[categoryName][index] = {
+                name: name,
+                auftau: auftau ? parseInt(auftau) : null,
+                vorbereitet: vorbereitet ? parseInt(vorbereitet) : null,
+                anbruch: anbruch ? parseInt(anbruch) : null,
+                umgefüllt: umgefuelltInput.value ? parseInt(umgefuelltInput.value) : null,
+                lager: lagerInput.value
+            };
+            
+            saveProducts();
+            showSuccessNotification(`"${name}" wurde gespeichert!`);
+        }
+
+        function deleteProductFromEditor(categoryName, index) {
+            const product = products[categoryName][index];
+            
+            if (!confirm(`"${product.name}" wirklich löschen?`)) {
+                return;
+            }
+            
+            products[categoryName].splice(index, 1);
+            saveProducts();
+            loadCategoryProducts(categoryName);
+            showSuccessNotification(`"${product.name}" wurde gelöscht!`);
+        }
+
+        function addNewProductToCategory() {
+            const categoryName = currentEditingCategory;
+            if (!categoryName) return;
+            
+            const name = document.getElementById('newCategoryProductName').value.trim();
+            if (!name) {
+                alert('Bitte Produktname eingeben!');
+                return;
+            }
+            
+            // Prüfe Duplikate
+            if (products[categoryName].find(p => p.name === name)) {
+                alert('Ein Produkt mit diesem Namen existiert bereits!');
+                return;
+            }
+            
+            const auftau = document.getElementById('newCategoryProductAuftau').value;
+            const vorbereitet = document.getElementById('newCategoryProductVorbereitet').value;
+            const anbruch = document.getElementById('newCategoryProductAnbruch').value;
+            const umgefuellt = document.getElementById('newCategoryProductUmgefuellt').value;
+            const lager = document.getElementById('newCategoryProductLager').value;
+            
+            // Mindestens ein Haltbarkeitswert
+            if (!auftau && !vorbereitet && !anbruch) {
+                alert('Mindestens ein Haltbarkeitswert muss angegeben werden!');
+                return;
+            }
+            
+            const newProduct = {
+                name: name,
+                auftau: auftau ? parseInt(auftau) : null,
+                vorbereitet: vorbereitet ? parseInt(vorbereitet) : null,
+                anbruch: anbruch ? parseInt(anbruch) : null,
+                umgefüllt: umgefuellt ? parseInt(umgefuellt) : null,
+                lager: lager
+            };
+            
+            products[categoryName].push(newProduct);
+            saveProducts();
+            loadCategoryProducts(categoryName);
+            
+            // Formular zurücksetzen
+            document.getElementById('newCategoryProductName').value = '';
+            document.getElementById('newCategoryProductAuftau').value = '';
+            document.getElementById('newCategoryProductVorbereitet').value = '';
+            document.getElementById('newCategoryProductAnbruch').value = '';
+            document.getElementById('newCategoryProductUmgefuellt').value = '';
+            document.getElementById('newCategoryProductLager').value = 'Gekühlt';
+            
+            showSuccessNotification(`"${name}" wurde hinzugefügt!`);
+        }
+
+        function backToCategoriesFromEditor() {
+            document.getElementById('categoryProductsEditor').classList.remove('active');
+            document.getElementById('categoriesTab').classList.add('active');
+            currentEditingCategory = null;
+        }
+
+        function addCategory() {
+            const categoryName = document.getElementById('newCategoryName').value.trim();
+            
+            if (!categoryName) {
+                alert('Bitte geben Sie einen Kategorienamen ein!');
+                return;
+            }
+
+            if (products[categoryName]) {
+                alert('Diese Kategorie existiert bereits!');
+                return;
+            }
+
+            products[categoryName] = [];
+            saveProducts();
+            updateCategoryGrid();
+            updateProductCategorySelect();
+            document.getElementById('newCategoryName').value = '';
+            
+            showSuccessNotification(`Kategorie "${categoryName}" wurde hinzugefügt!`);
+        }
+
+        function editCategory(categoryName) {
+            const newName = prompt(`Kategorie umbenennen von "${categoryName}" zu:`, categoryName);
+            
+            if (!newName || newName === categoryName) return;
+            
+            if (products[newName]) {
+                alert('Eine Kategorie mit diesem Namen existiert bereits!');
+                return;
+            }
+
+            products[newName] = products[categoryName];
+            delete products[categoryName];
+            saveProducts();
+            updateCategoryGrid();
+            updateProductCategorySelect();
+            
+            showSuccessNotification(`Kategorie wurde zu "${newName}" umbenannt!`);
+        }
+
+        function deleteCategory(categoryName) {
+            if (Object.keys(products).length <= 1) {
+                alert('Mindestens eine Kategorie muss vorhanden sein!');
+                return;
+            }
+
+            const productCount = products[categoryName].length;
+            if (!confirm(`Kategorie "${categoryName}" mit ${productCount} Produkten wirklich löschen?`)) {
+                return;
+            }
+
+            delete products[categoryName];
+            saveProducts();
+            updateCategoryGrid();
+            updateProductCategorySelect();
+            
+            showSuccessNotification(`Kategorie "${categoryName}" wurde gelöscht!`);
+        }
+
+        // Überflüssige Funktionen vom alten Produkt-Tab entfernt
+        // updateProductCategorySelect(), loadProductsForCategory(), addProduct(), etc.
+        // Diese sind jetzt durch den neuen Category Products Editor ersetzt
+
+        function updateProductCategorySelect() {
+            // Dummy function für Kompatibilität
+        }
+
+        function editProduct(categoryName, index) {
+            console.log('editProduct called:', categoryName, index); // Debug
+            editingCategory = categoryName;
+            editingProductIndex = index;
+            const product = products[categoryName][index];
+            
+            console.log('Editing product:', product); // Debug
+            
+            // Modal öffnen und Felder füllen
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductAuftau').value = product.auftau || '';
+            document.getElementById('editProductVorbereitet').value = product.vorbereitet || '';
+            document.getElementById('editProductAnbruch').value = product.anbruch || '';
+            document.getElementById('editProductUmgefuellt').value = product.umgefüllt || '';
+            document.getElementById('editProductLager').value = product.lager;
+            
+            // Modal anzeigen
+            const modal = document.getElementById('editProductModal');
+            modal.classList.remove('hidden');
+            console.log('Modal should be visible now'); // Debug
+        }
+
+        function closeEditProductModal() {
+            const modal = document.getElementById('editProductModal');
+            modal.classList.add('hidden');
+            editingCategory = null;
+            editingProductIndex = null;
+        }
+
+        function saveEditProduct() {
+            if (editingCategory === null || editingProductIndex === null) {
+                console.log('No product being edited');
+                return;
+            }
+
+            const name = document.getElementById('editProductName').value.trim();
+            if (!name) {
+                alert('Bitte geben Sie einen Produktnamen ein!');
+                return;
+            }
+
+            const auftau = document.getElementById('editProductAuftau').value;
+            const vorbereitet = document.getElementById('editProductVorbereitet').value;
+            const anbruch = document.getElementById('editProductAnbruch').value;
+            const umgefuellt = document.getElementById('editProductUmgefuellt').value;
+            const lager = document.getElementById('editProductLager').value;
+
+            // Mindestens ein Haltbarkeitswert muss angegeben werden
+            if (!auftau && !vorbereitet && !anbruch) {
+                alert('Mindestens ein Haltbarkeitswert (Auftau, Vorbereitet oder Anbruch) muss angegeben werden!');
+                return;
+            }
+
+            // Prüfe ob Name bereits existiert (außer beim aktuellen Produkt)
+            const existingProduct = products[editingCategory].find((p, i) => p.name === name && i !== editingProductIndex);
+            if (existingProduct) {
+                alert('Ein Produkt mit diesem Namen existiert bereits in dieser Kategorie!');
+                return;
+            }
+
+            const updatedProduct = {
+                name: name,
+                auftau: auftau ? parseInt(auftau) : null,
+                vorbereitet: vorbereitet ? parseInt(vorbereitet) : null,
+                anbruch: anbruch ? parseInt(anbruch) : null,
+                umgefüllt: umgefuellt ? parseInt(umgefuellt) : null,
+                lager: lager
+            };
+
+            products[editingCategory][editingProductIndex] = updatedProduct;
+            saveProducts();
+            loadProductsForCategory();
+            closeEditProductModal();
+            
+            showSuccessNotification(`Produkt "${name}" wurde aktualisiert!`);
+        }
+
+        function deleteProduct(categoryName, index) {
+            console.log('deleteProduct called:', categoryName, index); // Debug
+            const product = products[categoryName][index];
+            
+            if (!confirm(`Produkt "${product.name}" wirklich löschen?`)) {
+                return;
+            }
+
+            products[categoryName].splice(index, 1);
+            saveProducts();
+            loadProductsForCategory();
+            
+            showSuccessNotification(`Produkt "${product.name}" wurde gelöscht!`);
+        }
+
+        // Hauptapp
+        function initializeMainApp() {
+            // Setze aktuelle Zeit bei App-Start
+            preparationTime = new Date();
+            document.getElementById('preparationTime').value = preparationTime.toISOString().slice(0, 16);
+            renderProducts();
+            showCategories(); // Stelle sicher, dass Kategorieansicht angezeigt wird
+            
+            document.getElementById('preparationTime').addEventListener('change', function(e) {
+                preparationTime = new Date(e.target.value);
+                updatePreview();
+            });
+        }
+
+        function renderProducts() {
+            renderCategories();
+        }
+
+        function renderCategories() {
+            const categoryView = document.getElementById('categoryView');
+            categoryView.innerHTML = '';
+
+            Object.entries(products).forEach(([category, items]) => {
+                const categoryButton = document.createElement('button');
+                categoryButton.className = 'category-button';
+                categoryButton.innerHTML = `${category} (${items.length})`;
+                categoryButton.onclick = () => showProducts(category);
+                categoryView.appendChild(categoryButton);
+            });
+        }
+
+        function showProducts(category) {
+            currentCategory = category;
+            const items = products[category];
+            
+            // Verstecke Kategorien, zeige Produkte
+            document.getElementById('categoryView').style.display = 'none';
+            document.getElementById('productsView').style.display = 'block';
+            
+            // Setze Kategorie-Titel
+            document.getElementById('currentCategoryTitle').textContent = `${category} (${items.length})`;
+            
+            // Rendere Produkte
+            const productsList = document.getElementById('productsList');
+            productsList.innerHTML = items.map((product, index) => `
+                <button class="product-item" onclick="selectProduct('${category}', ${index})">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-info">
+                        <span class="haltbar">Haltbar: ${product.vorbereitet || product.anbruch || product.auftau || 24}h</span>
+                        ${product.auftau && product.vorbereitet ? ` (Auftau: ${product.auftau}h)` : ''}
+                        ${product.anbruch && !product.vorbereitet ? ' (nach Anbruch)' : ''}
+                        | ${product.lager}
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        function showCategories() {
+            // Zeige Kategorien, verstecke Produkte
+            document.getElementById('categoryView').style.display = 'block';
+            document.getElementById('productsView').style.display = 'none';
+            currentCategory = null;
+            
+            // Entferne Auswahl
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+        }
+
+        function selectProduct(category, index) {
+            selectedProduct = products[category][index];
+            
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            event.target.closest('.product-item').classList.add('selected');
+            
+            // Aktualisiere Vorbereitungszeit auf aktuelle Zeit bei neuer Produktauswahl
+            preparationTime = new Date();
+            document.getElementById('preparationTime').value = preparationTime.toISOString().slice(0, 16);
+            
+            updatePreview();
+            updatePrintButton();
+        }
+
+        function changeQuantity(delta) {
+            quantity = Math.max(1, quantity + delta);
+            document.getElementById('quantity').textContent = quantity;
+            updatePrintButton();
+        }
+
+        function calculateExpiryDateTime(product) {
+            const hours = product.vorbereitet || product.anbruch || product.auftau || 24;
+            const expiry = new Date(preparationTime.getTime() + hours * 60 * 60 * 1000);
+            return expiry;
+        }
+
+        function formatDateTime(date) {
+            return {
+                date: date.toLocaleDateString('de-DE'),
+                time: date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+            };
+        }
+
+        function updatePreview() {
+            const previewArea = document.getElementById('previewArea');
+            
+            if (!selectedProduct) {
+                previewArea.innerHTML = '';
+                return;
+            }
+
+            const expiry = calculateExpiryDateTime(selectedProduct);
+            const formatted = formatDateTime(expiry);
+            const prepFormatted = formatDateTime(preparationTime);
+
+            previewArea.innerHTML = `
+                <div class="preview-box">
+                    <h3 class="preview-title">Label-Vorschau:</h3>
+                    <div class="preview-label">
+                        <div class="preview-product-name">${selectedProduct.name}</div>
+                        <div class="preview-date">${prepFormatted.date}</div>
+                        <div class="preview-date">${formatted.date}</div>
+                        <div class="preview-date">${prepFormatted.time} - ${currentUser.shortcode}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSuccessNotification(message) {
+            // Bestehende Benachrichtigung entfernen
+            const existing = document.querySelector('.success-notification');
+            if (existing) {
+                existing.remove();
+            }
+
+            // Neue Benachrichtigung erstellen
+            const notification = document.createElement('div');
+            notification.className = 'success-notification';
+            notification.innerHTML = `✅ ${message}`;
+            
+            document.body.appendChild(notification);
+            
+            // Animation starten
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Nach 3 Sekunden ausblenden
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        function updatePrintButton() {
+            const printButton = document.getElementById('printButton');
+            const printText = document.getElementById('printText');
+            
+            if (selectedProduct) {
+                printButton.className = 'print-button enabled';
+                printText.textContent = `${quantity} Label${quantity > 1 ? 's' : ''} drucken`;
+            } else {
+                printButton.className = 'print-button disabled';
+                printText.textContent = '1 Label drucken';
+            }
+        }
+
+        async function printLabel() {
+            if (!selectedProduct) return;
+            
+            const expiry = calculateExpiryDateTime(selectedProduct);
+            const formatted = formatDateTime(expiry);
+            const prepFormatted = formatDateTime(preparationTime);
+            
+            const labelData = {
+                productName: selectedProduct.name,
+                preparationDate: prepFormatted.date,
+                expiryDate: formatted.date,
+                preparationTime: prepFormatted.time,
+                userShortcode: currentUser.shortcode,
+                quantity: quantity,
+                user: currentUser.pin
+            };
+
+            if (typeof require !== 'undefined') {
+                try {
+                    const { ipcRenderer } = require('electron');
+                    const result = await ipcRenderer.invoke('print-label', labelData);
+                    
+                    if (result && result.success) {
+                        if (result.method === 'file') {
+                            alert(`✅ ${result.message}`);
+                        } else if (result.method === 'raw') {
+                            showSuccessNotification(`${quantity} Label(s) direkt gedruckt auf ${result.printer}`);
+                        } else if (result.method === 'commandline') {
+                            showSuccessNotification(`${quantity} Label(s) über System gedruckt`);
+                        } else {
+                            showSuccessNotification(`${quantity} Label(s) erfolgreich gedruckt`);
+                        }
+                    } else {
+                        alert(`❌ Druckfehler: ${result ? result.error : 'Unbekannter Fehler'}`);
+                    }
+                } catch (error) {
+                    alert(`❌ Verbindungsfehler: ${error.message}`);
+                    openBrowserPrint(labelData);
+                }
+            } else {
+                openBrowserPrint(labelData);
+            }
+        }
+
+        function openBrowserPrint(labelData) {
+            const printWindow = window.open('', '_blank');
+            const labelHtml = generateBrowserPrintHTML(labelData);
+            
+            printWindow.document.write(labelHtml);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        }
+
+        function generateBrowserPrintHTML(labelData) {
+            let labelsHtml = '';
+            for (let i = 0; i < labelData.quantity; i++) {
+                labelsHtml += `
+                    <div class="label">
+                        <div class="product-name">${labelData.productName}</div>
+                        <div class="date-info">${labelData.preparationDate}</div>
+                        <div class="date-info">${labelData.expiryDate}</div>
+                        <div class="date-info">${labelData.preparationTime} - ${labelData.userShortcode}</div>
+                    </div>
+                `;
+            }
+
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Label - ${labelData.productName}</title>
+                    <style>
+                        @page { size: 58mm auto; margin: 2mm; }
+                        body { font-family: 'Courier New', monospace; font-size: 12px; margin: 0; padding: 2mm; text-align: center; }
+                        .label { width: 54mm; margin-bottom: 5mm; page-break-after: always; border: 1px dashed #999; padding: 3mm; }
+                        .product-name { font-size: 16px; font-weight: bold; margin-bottom: 3mm; text-transform: uppercase; }
+                        .date-info { font-size: 12px; margin: 2mm 0; font-weight: bold; }
+                        @media print { .label { margin: 0; border: none; page-break-after: always; padding: 2mm; } }
+                    </style>
+                </head>
+                <body>
+                    ${labelsHtml}
+                </body>
+                </html>
+            `;
+        }
+    </script>
+</body>
+</html>
+                
