@@ -1232,9 +1232,9 @@
         </div>
 
         <!-- Products Tab in Admin Panel -->
-        <div id="adminProductsTab" class="tab-content">
-            <!-- Categories Tab -->
-            <div id="categoriesTab" class="tab-content active">
+        <div id="adminProductsTab" class="tab-content"> <!-- This one becomes active when 'products' tab is clicked -->
+            <!-- Categories Overview Tab -->
+            <div id="categoriesOverviewTab" class="active"> <!-- Initially active view within products tab -->
                 <div class="category-grid" id="categoryGrid">
                     <!-- Categories populated by JavaScript -->
                 </div>
@@ -1258,10 +1258,10 @@
                 </div>
             </div>
 
-            <!-- Category Products Editor -->
-            <div id="categoryProductsEditor" class="tab-content">
+            <!-- Product Editor View Tab -->
+            <div id="productEditorViewTab" style="display: none;"> <!-- Initially hidden -->
                 <div class="category-header">
-                    <button class="back-to-categories" onclick="backToCategoriesFromEditor()">
+                    <button class="back-to-categories" onclick="closeProductEditorView()"> <!-- Adjusted JS function name -->
                         ← Zurück zu Kategorien
                     </button>
                     <h3 class="category-title">Produkte bearbeiten: <span id="editorCategoryName"></span></h3>
@@ -1843,9 +1843,11 @@
                 document.getElementById('newUserPin').focus();
             } else if (tabName === 'products') {
                 document.getElementById('adminProductsTab').classList.add('active');
-                // Ensure categories view is shown by default for products tab
-                document.getElementById('categoryProductsEditor').classList.remove('active');
-                document.getElementById('categoriesTab').classList.add('active'); // Make sure this is active
+                // Default to categories overview
+                document.getElementById('categoriesOverviewTab').style.display = 'block';
+                document.getElementById('categoriesOverviewTab').classList.add('active'); // Keep active class for consistency if CSS relies on it
+                document.getElementById('productEditorViewTab').style.display = 'none';
+                document.getElementById('productEditorViewTab').classList.remove('active');
                 updateCategoryGrid();
             } else if (tabName === 'backups') {
                 document.getElementById('adminBackupsTab').classList.add('active');
@@ -2103,23 +2105,25 @@
                 const editBtn = categoryCard.querySelector('.btn-edit');
                 const deleteBtn = categoryCard.querySelector('.btn-delete');
                 
-                editBtn.addEventListener('click', () => showCategoryProductsEditor(categoryName));
+                editBtn.addEventListener('click', () => openProductEditorView(categoryName)); // Adjusted function call
                 deleteBtn.addEventListener('click', () => deleteCategory(categoryName));
                 
                 categoryGrid.appendChild(categoryCard);
             });
         }
 
-        function showCategoryProductsEditor(categoryName) {
-            // Verstecke Kategorien-Tab und zeige Produkt-Editor
-            document.getElementById('categoriesTab').classList.remove('active');
-            document.getElementById('categoryProductsEditor').classList.add('active');
+        function openProductEditorView(categoryName) {
+            // Hide categories overview, show product editor view
+            document.getElementById('categoriesOverviewTab').style.display = 'none';
+            document.getElementById('categoriesOverviewTab').classList.remove('active');
+            document.getElementById('productEditorViewTab').style.display = 'block';
+            document.getElementById('productEditorViewTab').classList.add('active'); // Keep active class for consistency
             
-            // Setze Kategorie-Titel
+            // Set category title
             document.getElementById('editorCategoryName').textContent = categoryName;
             currentEditingCategory = categoryName;
             
-            // Lade Produktliste
+            // Load product list
             loadCategoryProducts(categoryName);
         }
 
@@ -2297,9 +2301,12 @@
             showSuccessNotification(`"${name}" wurde hinzugefügt!`);
         }
 
-        function backToCategoriesFromEditor() {
-            document.getElementById('categoryProductsEditor').classList.remove('active');
-            document.getElementById('categoriesTab').classList.add('active');
+        function closeProductEditorView() {
+            // Hide product editor view, show categories overview
+            document.getElementById('productEditorViewTab').style.display = 'none';
+            document.getElementById('productEditorViewTab').classList.remove('active');
+            document.getElementById('categoriesOverviewTab').style.display = 'block';
+            document.getElementById('categoriesOverviewTab').classList.add('active');
             currentEditingCategory = null;
         }
 
