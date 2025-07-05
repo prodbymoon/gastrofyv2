@@ -6,690 +6,774 @@
     <title>Gastrofy v2.0.5</title>
     
     <style>
-        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
-        :root {
-            --primary-color: #10b981; /* Emerald 500 */
-            --primary-color-dark: #059669; /* Emerald 600 */
-            --primary-color-darker: #047857; /* Emerald 700 */
-            --primary-color-light: #d1fae5; /* Emerald 100 */
-            --primary-color-lighter: #f0fdf4; /* Emerald 50 */
-
-            --secondary-color: #3b82f6; /* Blue 500 */
-            --secondary-color-dark: #2563eb; /* Blue 600 */
-            --secondary-color-light: #dbeafe; /* Blue 100 */
-            --secondary-color-lighter: #eff6ff; /* Blue 50 */
-
-            --warning-color: #f59e0b; /* Amber 500 */
-            --warning-color-dark: #d97706; /* Amber 600 */
-
-            --danger-color: #ef4444; /* Red 500 */
-            --danger-color-dark: #dc2626; /* Red 600 */
-            --danger-color-light: #fecaca; /* Red 200 */
-            --danger-color-lighter: #fef2f2; /* Red 50 */
-
-            --text-primary: #1f2937; /* Gray 800 */
-            --text-secondary: #4b5563; /* Gray 600 */
-            --text-muted: #6b7280; /* Gray 500 */
-            --text-on-primary: white;
-            --text-on-danger: white;
-
-            --border-color: #d1d5db; /* Gray 300 */
-            --border-color-light: #e5e7eb; /* Gray 200 */
-
-            --background-light: white;
-            --background-page: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 50%, var(--primary-color-darker) 100%);
-            --background-card: var(--background-light);
-            --background-input: var(--primary-color-lighter);
-
-            --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-
-            --border-radius-small: 8px;
-            --border-radius-medium: 12px;
-            --border-radius-large: 16px;
-            --border-radius-xl: 24px; /* Formerly 28px, slightly reduced for more standard look */
-            --border-radius-circle: 50%;
-
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-        }
-
         body {
-            font-family: var(--font-family-sans);
-            background: var(--background-page);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
             min-height: 100vh;
-            height: 100vh; /* Fix for vh issues on mobile, though it's an Electron app */
+            height: 100vh;
             max-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--primary-color-lighter);
-            border-radius: var(--border-radius-small);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color-light);
-            border-radius: var(--border-radius-small);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-color);
-        }
-
-        /* General Container Styles */
-        .login-container,
-        .admin-container,
-        .modal {
-            background: var(--background-light);
-            border-radius: var(--border-radius-xl);
-            box-shadow: var(--shadow-xl);
-            padding: 2.5rem; /* Base padding, can be overridden */
-        }
-
+        /* Login Screen */
         .login-container {
-            text-align: center;
-            min-width: 450px; /* Slightly wider */
-            max-width: 520px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
             padding: 3rem;
+            text-align: center;
+            min-width: 420px;
+            max-width: 500px;
+            backdrop-filter: blur(20px);
         }
 
-        .admin-container {
-            min-width: 700px; /* Slightly wider */
-            max-width: 900px;
-        }
-
-        .modal {
-            padding: 2rem; /* Modals can be a bit more compact */
-            max-width: 650px;
-        }
-
-        /* Typography */
         .login-title {
-            font-size: 3.5rem; /* Larger icon */
+            font-size: 3rem;
             font-weight: bold;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-darker));
+            background: linear-gradient(135deg, #10b981, #047857);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
         }
 
         .login-subtitle {
-            font-size: 1.5rem;
-            color: var(--text-primary);
-            margin-bottom: 2.5rem;
+            font-size: 1.3rem;
+            color: #374151;
+            margin-bottom: 3rem;
             font-weight: 600;
         }
 
-        .admin-title, .modal-title {
-            font-size: 1.75rem;
-            font-weight: 700; /* Bold */
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-darker));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0; /* Handled by header */
+        .pin-input {
+            width: 100%;
+            padding: 1.5rem;
+            font-size: 2rem;
+            text-align: center;
+            border: 3px solid #d1fae5;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: #f0fdf4;
         }
 
-        .card-title {
-            font-size: 1.25rem;
+        .pin-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+            background: white;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .admin-button {
+            width: 100%;
+            padding: 1rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
             font-weight: 600;
             margin-bottom: 1rem;
-            color: var(--primary-color-darker);
         }
 
-        .label { /* Form label */
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color-darker);
-        }
-
-        .help-text {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
+        .admin-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: translateY(-1px);
         }
 
         .made-by {
             font-size: 0.9rem;
-            color: var(--text-muted);
+            color: #6b7280;
             font-style: italic;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
         }
 
-        /* Buttons */
-        .button-base { /* New base class for common button styles */
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--border-radius-medium);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            text-decoration: none; /* For anchor tags styled as buttons */
-        }
-
-        .button-base:focus-visible { /* Modern focus indicator */
-            outline: none;
-            box-shadow: 0 0 0 3px var(--primary-color-light), var(--shadow-md);
-        }
-
-        .button-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
-            color: var(--text-on-primary);
-            box-shadow: var(--shadow-sm);
-        }
-        .button-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color-darker));
-        }
-
-        .button-secondary {
-            background: var(--primary-color-lighter);
-            color: var(--primary-color-darker);
-            border: 2px solid var(--primary-color-light);
-            box-shadow: var(--shadow-sm);
-        }
-        .button-secondary:hover {
-            background: var(--primary-color-light);
-            border-color: var(--primary-color);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-        .button-secondary:focus-visible {
-             box-shadow: 0 0 0 3px var(--primary-color-light), var(--shadow-md);
-        }
-
-        .button-danger {
-            background: linear-gradient(135deg, var(--danger-color), var(--danger-color-dark));
-            color: var(--text-on-danger);
-            box-shadow: var(--shadow-sm);
-        }
-        .button-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            background: linear-gradient(135deg, var(--danger-color-dark), #b91c1c); /* Red 700 */
-        }
-        .button-danger:focus-visible {
-             box-shadow: 0 0 0 3px var(--danger-color-light), var(--shadow-md);
-        }
-
-        /* Specific Button Instances - Applying base and variant styles */
-        .login-button { /* Extends button-base, button-primary */
-            width: 100%;
-            padding: 1.25rem; /* Larger for login */
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .admin-button { /* Extends button-base, button-secondary */
-            width: 100%;
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 15px;
             margin-bottom: 1rem;
-        }
-
-        .back-button, .close-button { /* Extends button-base, button-secondary */
-            padding: 0.6rem 1.2rem; /* Slightly smaller */
-        }
-
-        .add-user-button { /* Extends button-base, button-primary */
-             padding: 0.8rem 1.8rem;
-        }
-
-        .delete-button { /* Small, circular delete button */
-            background: var(--danger-color);
-            color: var(--text-on-danger);
-            border: none;
-            border-radius: var(--border-radius-circle);
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
             font-weight: bold;
-            font-size: 16px;
-            transition: all 0.2s ease;
+            border: 2px solid #fecaca;
+        }
+
+        /* Admin Panel */
+        .admin-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            padding: 2.5rem;
+            min-width: 650px;
+            max-width: 850px;
+            /* Added to make admin-container a flex container for its children */
             display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute; /* Keep as is for card positioning */
-            top: 0.75rem;
-            right: 0.75rem;
-            box-shadow: var(--shadow-sm);
-        }
-        .delete-button:hover {
-            background: var(--danger-color-dark);
-            transform: scale(1.1);
-            box-shadow: var(--shadow-md);
-        }
-        .delete-button:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 3px var(--danger-color-light);
+            flex-direction: column;
+            max-height: 95vh; /* Limit overall height of admin panel */
         }
 
-        .btn-small { /* Extends button-base */
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
-        .btn-edit { /* Extends button-secondary */
-            background: var(--primary-color-lighter);
-            color: var(--primary-color-darker);
-            border: 2px solid var(--primary-color-light);
-        }
-        .btn-edit:hover {
-            background: var(--primary-color-light);
-            border-color: var(--primary-color);
-        }
-        .btn-delete { /* Extends button-secondary, but with danger colors */
-            background: var(--danger-color-lighter);
-            color: var(--danger-color-dark);
-            border-color: var(--danger-color-light);
-        }
-        .btn-delete:hover {
-            background: var(--danger-color-light);
-            border-color: var(--danger-color);
-        }
-
-        .backup-button { /* Extends button-base, button-primary (for create) or custom (for restore) */
-            padding: 0.8rem 1.8rem;
-        }
-        .backup-button.restore {
-            background: linear-gradient(135deg, var(--warning-color), var(--warning-color-dark));
-        }
-        .backup-button.restore:hover {
-            background: linear-gradient(135deg, var(--warning-color-dark), #a16207); /* Amber 700 */
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .logout-button { /* Extends button-base, button-danger */
-            padding: 0.6rem 1.2rem;
-        }
-
-        .product-admin-button { /* Extends button-base, button-primary */
-             padding: 0.6rem 1.2rem;
-        }
-
-        .category-button { /* Extends button-base, button-primary */
-            width: 100%;
-            font-size: 1.1rem;
-            margin-bottom: 0.75rem;
-            padding: 1rem;
-        }
-
-        .quantity-button { /* Extends button-base, button-secondary */
-            padding: 0.75rem;
-            font-size: 1.2rem;
-            width: 44px; /* Fixed width for square-ish look */
-            height: 44px;
-        }
-
-        .print-button { /* Extends button-base */
-            width: 100%;
-            padding: 1rem;
-            font-size: 1.1rem;
-        }
-        .print-button.enabled { /* Extends button-primary */
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
-            color: var(--text-on-primary);
-        }
-        .print-button.disabled {
-            background: var(--border-color-light);
-            color: var(--text-muted);
-            cursor: not-allowed;
-        }
-
-        /* Inputs and Form Elements */
-        .input,
-        .pin-input,
-        .add-user-input,
-        select.input /* Targeting select specifically if it has .input class */
-        {
-            width: 100%;
-            padding: 0.9rem 1rem; /* Consistent padding */
-            font-size: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius-medium);
-            background: var(--background-light); /* White background */
-            transition: all 0.2s ease-in-out;
-            color: var(--text-primary);
-        }
-        .input:focus,
-        .pin-input:focus,
-        .add-user-input:focus,
-        select.input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--primary-color-light);
-            background: var(--background-light);
-        }
-
-        .pin-input {
-            padding: 1.25rem; /* Larger for PIN */
-            font-size: 1.8rem;
-            text-align: center;
-            letter-spacing: 0.5rem;
-            font-weight: bold;
-            background: var(--background-input); /* Light green background */
-        }
-        .pin-input:focus {
-            background: var(--background-light); /* White on focus */
-        }
-
-        .add-user-input { /* For PIN and Shortcode in admin */
-            width: 130px; /* Slightly wider */
-            text-align: center;
-            letter-spacing: 0.3rem;
-            font-weight: bold;
-            margin-right: 0; /* Remove specific margin, handle with gap in flex */
-        }
-
-        .input-small { /* If still needed, can be a modifier class */
-            width: 100px; /* Or use flex-basis for better layout control */
-            padding: 0.7rem 0.8rem;
-            font-size: 0.9rem;
-        }
-
-        .file-input { /* Keep hidden */
-            display: none;
-        }
-
-        /* Cards */
-        .user-card,
-        .category-card,
-        .card /* Main app card */
-        {
-            background: var(--background-card);
-            border: 1px solid var(--border-color-light); /* Softer border */
-            border-radius: var(--border-radius-large); /* Larger radius */
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md); /* Softer shadow */
-            transition: all 0.2s ease-in-out;
-            position: relative; /* For absolute positioned children like delete button */
-            display: flex; /* Ensure it's a flex container */
-            flex-direction: column; /* Stack children vertically */
-            /* overflow: hidden; --- REMOVED THIS LINE --- */
-        }
-        .user-card:hover,
-        .category-card:hover,
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color-light);
-        }
-
-        .user-pin {
-            font-size: 1.6rem; /* Slightly larger */
-            font-weight: bold;
-            color: var(--primary-color-dark);
-            margin-bottom: 0.5rem;
-            font-family: 'Courier New', monospace; /* Keep monospace for PINs */
-        }
-
-        .user-info { /* Text in user card */
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .category-name {
-            font-size: 1.3rem;
-            font-weight: 600; /* Semi-bold */
-            color: var(--primary-color-darker);
-            margin-bottom: 0.75rem;
-        }
-
-        .product-count {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .product-mini-list {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        .product-mini-item {
-            padding: 0.3rem 0;
-            border-bottom: 1px solid var(--border-color-light);
-        }
-        .product-mini-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Admin Panel Specifics */
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem; /* More space */
-            padding-bottom: 1.5rem; /* More space */
-            border-bottom: 1px solid var(--border-color-light); /* Softer border */
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #d1fae5;
+            flex-shrink: 0; /* Prevent header from shrinking */
+        }
+
+        .admin-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #10b981, #047857);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-button {
+            padding: 0.75rem 1.5rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: translateY(-1px);
+        }
+
+        #adminUsersTab .user-grid { /* Targeting user-grid specifically within adminUsersTab */
+            display: grid; /* Keep the grid layout */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            /* margin-bottom: 2rem; This might be too much if add-user-section is directly below */
+            padding: 0.5rem; /* Add some padding around the grid items */
+
+            flex-grow: 1; /* Take available vertical space */
+            overflow-y: auto; /* Enable vertical scrolling */
+            min-height: 0; /* Crucial for flex item scrolling */
+            margin-bottom: 1rem; /* Space before add-user-section */
+        }
+
+        .user-card {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #d1fae5;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .user-pin {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .user-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .add-user-section {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px dashed #10b981;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            flex-shrink: 0; /* Prevent this from shrinking if user-grid needs space */
+        }
+
+        .add-user-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-user-input {
+            width: 120px;
+            padding: 1rem;
+            font-size: 1.3rem;
+            text-align: center;
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            margin-right: 1rem;
+            letter-spacing: 0.3rem;
+            font-weight: bold;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .add-user-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .add-user-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .add-user-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Product Admin Panel */
+        .product-admin-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            padding: 2.5rem;
+            min-width: 900px;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .admin-tabs {
             display: flex;
-            margin-bottom: 2rem; /* More space */
-            border-bottom: 1px solid var(--border-color-light);
+            margin-bottom: 1rem; /* Reduced margin for tighter layout if needed */
+            border-bottom: 2px solid #d1fae5;
+            flex-shrink: 0; /* Prevent tabs from shrinking */
         }
+
         .admin-tab {
-            padding: 0.9rem 1.75rem; /* Adjusted padding */
-            background: transparent; /* Inactive tabs cleaner */
-            color: var(--text-secondary);
-            border: none; /* Remove border for inactive */
-            border-bottom: 3px solid transparent; /* Space for active indicator */
-            border-radius: 0; /* Remove radius for tab style */
+            padding: 1rem 2rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: bold;
             margin-right: 0.5rem;
-            transition: all 0.2s ease;
-            position: relative;
-            top: 1px; /* Align with bottom border of .admin-tabs */
+            transition: all 0.3s ease;
         }
+
         .admin-tab.active {
-            color: var(--primary-color-dark);
-            border-bottom-color: var(--primary-color-dark);
-            background: var(--primary-color-lighter); /* Slight background for active tab */
-            border-top-left-radius: var(--border-radius-medium); /* Rounded top corners for active tab */
-            border-top-right-radius: var(--border-radius-medium);
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border-color: #10b981;
         }
+
         .admin-tab:hover:not(.active) {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color-light);
+            background: #dcfce7;
+            border-color: #10b981;
         }
 
-        .tab-content {
-            display: none;
-            padding-top: 1rem; /* Add some space above tab content */
-        }
-        .tab-content.active {
-            display: block;
+        /* === Styles for Admin Tab Content Scrolling === */
+        #adminPanel .tab-content {
+            display: none; /* Default hidden */
+            flex-direction: column; /* Children will stack vertically */
+            overflow: hidden; /* This container does not scroll; children might. */
+             /* Take remaining space after header and tabs */
+            flex-grow: 1;
+            min-height: 0; /* Important for nested flex scrolling */
         }
 
-        .user-grid {
+        #adminPanel .tab-content.active {
+            display: flex; /* Show as flex when active */
+        }
+        /* === End Styles for Admin Tab Content Scrolling === */
+
+
+        /* Scrollbares Admin-Produkts-Tab - This rule might be redundant if handled by the general #adminPanel .tab-content */
+        /*
+        #adminProductsTab {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        */
+
+        #adminProductsTab .tab-content { /* This refers to #categoriesOverviewTab and #productEditorViewTab */
+             /* These are children of #adminProductsTab which is already flex column */
+            /* They should not be display:block if their parent is flex and they need to participate in flex layout */
+            /* display: block; /* Immer sichtbar innerhalb des Admin-Produkts-Tabs */
+        }
+
+        #adminProductsTab .tab-content.active {
+            /* display: block; */
+        }
+
+
+        .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Slightly larger minmax */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .add-user-section, .add-category-section { /* Common styling for "add" sections */
-            background: linear-gradient(135deg, var(--primary-color-lighter), #e0f2fe); /* Lighter gradient, to blueish */
-            border: 2px dashed var(--primary-color-light);
-            border-radius: var(--border-radius-large);
+        .category-card {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #d1fae5;
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+
+        .category-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 1rem;
+        }
+
+        .product-count {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: 2px solid #d1fae5;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #f0fdf4;
+            color: #047857;
+        }
+
+        .btn-edit:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .product-mini-list {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .product-mini-item {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .add-category-section {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px dashed #10b981;
+            border-radius: 20px;
             padding: 2rem;
             text-align: center;
-            margin-top: 1.5rem; /* Add some space if it's after a grid */
-        }
-        .add-user-title { /* Title within these sections */
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--primary-color-darker);
-            margin-bottom: 1.5rem;
+            flex-shrink: 0; /* Prevent shrinking */
         }
 
-        /* Product Admin Panel (within adminPanel) */
-        #adminProductsTab { /* Container for both category overview and product editor */
-            max-height: 70vh; /* Keep scroll behavior */
-            overflow-y: auto;
-        }
-        .category-grid { /* Grid for category cards */
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .category-actions { /* Container for edit/delete buttons on category card */
-            display: flex;
-            gap: 0.75rem; /* More space */
-            margin-bottom: 1rem;
-        }
-
-        /* Product Editor View */
-        #productEditorViewTab .category-header { /* Header in product editor */
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            gap: 1rem;
-        }
-        #productEditorViewTab .category-header .category-title {
-            font-size: 1.4rem; /* Make it more prominent */
-            color: var(--text-primary);
-            margin-bottom: 0;
-        }
-        .product-editor-list {
-            max-height: calc(65vh - 150px); /* Adjust based on surrounding elements */
-            overflow-y: auto;
-            margin-bottom: 2rem;
-            padding-right: 0.5rem; /* For scrollbar */
-        }
-        .product-editor-item { /* Card for each product in editor */
-            background: var(--background-light);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-large);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
-        }
-        .product-editor-item:hover {
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-md);
-        }
-        .product-editor-form .form-row { /* For aligning inputs in product editor */
+        .form-row {
             display: flex;
             gap: 1rem;
-            align-items: flex-end; /* Align labels top, inputs bottom */
+            align-items: end;
+            justify-content: center;
             flex-wrap: wrap;
+        }
+
+        .form-group {
             margin-bottom: 1rem;
         }
-        .product-editor-form .form-row:last-child {
-            margin-bottom: 0;
-        }
-        .product-editor-form .form-group-inline {
+
+        .form-group-inline {
             display: flex;
             flex-direction: column;
-            min-width: 120px;
-            flex: 1; /* Allow flexible growth */
-        }
-        .product-editor-form .form-group-inline:last-child { /* For action buttons */
-            flex: 0 0 auto; /* Don't grow button group */
-        }
-        /* Specific button styles for product editor to override defaults if needed */
-        .save-product-btn { /* Extends button-base, button-secondary */
-            /* Styles already inherited, or can be more specific here */
-        }
-        .delete-product-btn { /* Extends button-base, btn-delete */
-             /* Styles already inherited */
+            min-width: 150px;
         }
 
-        /* Backup Section (within its tab) */
-        .backup-section { /* Styles when it's inside a tab */
-            background: none; /* Remove distinct background if it's inside a tab content */
-            border: none;
-            padding: 1rem 0; /* Adjust padding */
-            margin-bottom: 0;
-            text-align: center;
-        }
-        .backup-title {
-            font-size: 1.5rem; /* Consistent with other tab titles */
+        .label {
+            display: block;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: var(--primary-color-darker); /* Or text-primary */
+            margin-bottom: 0.4rem;
+            color: #047857;
+        }
+
+        .input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .input-small {
+            width: 100px;
+            padding: 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #d1fae5;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #047857;
+        }
+
+        .close-button {
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+
+        .product-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-item-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .product-item-admin:hover {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name-admin {
+            font-weight: bold;
+            color: #047857;
+            margin-bottom: 0.25rem;
+        }
+
+        .product-specs {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .product-editor-list {
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+
+        .product-editor-item {
+            background: white;
+            border: 2px solid #d1fae5;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .product-editor-item:hover {
+            border-color: #10b981;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .product-editor-form {
+            width: 100%;
+        }
+
+        .product-editor-form .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .product-editor-form .form-group-inline {
+            min-width: 120px;
+            flex: 1;
+        }
+
+        .product-editor-form .form-group-inline:last-child {
+            flex: 0 0 auto;
+        }
+
+        .save-product-btn {
+            background: #f0fdf4 !important;
+            color: #047857 !important;
+            border-color: #d1fae5 !important;
+        }
+
+        .save-product-btn:hover {
+            background: #dcfce7 !important;
+            border-color: #10b981 !important;
+        }
+
+        .delete-product-btn {
+            background: #fef2f2 !important;
+            color: #dc2626 !important;
+            border-color: #fecaca !important;
+        }
+
+        .delete-product-btn:hover {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* Backup Section Styles */
+        .backup-section {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 2px solid #3b82f6;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .backup-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1e40af;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
         }
+
         .backup-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 1.5rem; /* More space */
+            margin-bottom: 1rem;
         }
+
+        .backup-button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .backup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .backup-button.restore {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .backup-button.restore:hover {
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
         .backup-info {
             font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 1.5rem;
+            color: #374151;
+            margin-top: 1rem;
             line-height: 1.5;
         }
 
-        /* Status Messages */
-        .error-message, .backup-status {
-            padding: 1rem;
-            border-radius: var(--border-radius-medium);
-            margin-bottom: 1rem;
-            font-weight: 500; /* Medium weight */
-            border: 1px solid transparent;
-        }
-        .error-message {
-            background: var(--danger-color-lighter);
-            color: var(--danger-color-dark);
-            border-color: var(--danger-color-light);
-        }
-        .backup-status.success {
-            background: var(--primary-color-lighter);
-            color: var(--primary-color-darker);
-            border-color: var(--primary-color-light);
-        }
-        .backup-status.error { /* Consistent with .error-message */
-            background: var(--danger-color-lighter);
-            color: var(--danger-color-dark);
-            border-color: var(--danger-color-light);
+        .file-input {
+            display: none;
         }
 
-        /* Main App Styles */
+        .backup-status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .backup-status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .backup-status.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 2px solid #ef4444;
+        }
+
+        /* Main App */
         .app-container {
-            background: var(--background-page); /* Consistent with body */
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
             height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            padding: 1rem; /* Add some padding around the app */
+            padding: 0.5rem;
         }
-        .container { /* Main content wrapper in app */
-            max-width: 1280px; /* Wider for desktop */
+
+        .container {
+            max-width: 1200px;
             width: 100%;
             height: 100%;
             margin: 0 auto;
@@ -697,169 +781,337 @@
             flex-direction: column;
             overflow: hidden;
         }
-        /* .title rule can be removed or left, it won't be used */
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .user-info-bar {
-            background: var(--background-light);
-            border-radius: var(--border-radius-large);
-            padding: 0.75rem 1.5rem; /* Adjusted padding */
-            margin-bottom: 1.5rem; /* Increased margin to compensate for removed title */
+            background: white;
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color-light);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+            border: 2px solid #d1fae5;
             flex-shrink: 0;
         }
+
         .current-user {
-            font-weight: 600;
-            color: var(--primary-color-darker);
-            font-size: 1.05rem; /* Slightly larger */
+            font-weight: bold;
+            color: #047857;
+            font-size: 1.1rem;
         }
-        .grid { /* For the two main cards in app */
+
+        .logout-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .product-admin-button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+
+        .product-admin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .grid {
             display: grid;
-            grid-template-columns: 1fr; /* Default for smaller viewports */
-            gap: 1.5rem; /* More space */
+            grid-template-columns: 1fr;
+            gap: 1rem;
             flex: 1;
             overflow: hidden;
             height: 100%;
         }
-        @media (min-width: 800px) { /* Adjust breakpoint if needed */
+
+        @media (min-width: 768px) {
             .grid {
                 grid-template-columns: 1fr 1fr;
             }
         }
-        .scroll-area {
-            flex: 1; /* Takes available vertical space in .card */
-            min-height: 0; /* Crucial for flex children that need to scroll */
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.1);
+            padding: 1.5rem;
+            border: 2px solid #d1fae5;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Explicitly hide overflow here, child elements will handle their own scroll */
+            overflow: hidden;
         }
-        .scroll-area > .category-view {
-            /* This view might not need to scroll if categories are few. */
-            /* If it does, it would need overflow-y: auto and a defined height/max-height */
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            color: #047857;
+            flex-shrink: 0;
         }
-        .scroll-area > .products-view { /* This is #productsView */
-            display: none; /* Controlled by JS */
-            flex: 1; /* Takes all available space in .scroll-area when active */
-            flex-direction: column; /* Stack header and product list */
-            min-height: 0; /* Allows its children to scroll */
-            overflow: hidden; /* Crucial: productsView itself should not scroll, its child #productsList should */
+
+        .scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 0.5rem;
+            min-height: 0;
         }
-        #productsList { /* The actual list of product items */
-            flex-grow: 1; /* Takes all available space within #productsView (after .category-header) */
-            overflow-y: auto; /* This is where the product items should scroll */
-            min-height: 0; /* Necessary for flex item to scroll */
-            padding-right: 0.5rem; /* Space for scrollbar */
-            /* Test with an explicit max-height to see if scrolling triggers */
-            /* max-height: 300px; */ /* You can uncomment this for testing if flex calculations fail */
-        }
-        .category-title { /* In main app product view */
-            font-size: 1.3rem;
+
+        .category-button {
+            width: 100%;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: var(--primary-color-darker);
+            margin-bottom: 0.75rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
         }
-        .product-list { /* Container for products in a category */
-            /* display: none; by default handled by JS */
+
+        .category-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #047857;
+        }
+
+        .product-list {
+            display: none;
             margin-bottom: 0.75rem;
         }
+
         .product-list.active {
             display: block;
         }
-        .category-header { /* In main app, for back button and category title */
+
+        .category-header {
             display: flex;
             align-items: center;
             margin-bottom: 1rem;
             gap: 0.75rem;
         }
-        .back-to-categories { /* Extends button-base, button-secondary */
-            padding: 0.5rem 1rem; /* Smaller */
+
+        .back-to-categories {
+            padding: 0.5rem 1rem;
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .product-item { /* Product buttons in main app */
+
+        .back-to-categories:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: translateX(-2px);
+        }
+
+        .category-view {
+            display: block;
+        }
+
+        .products-view {
+            display: none;
+        }
+
+        .product-item {
             width: 100%;
             text-align: left;
-            padding: 1rem 1.25rem; /* More padding */
-            margin-bottom: 0.6rem; /* Slightly more space */
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-medium);
-            background: var(--background-light);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            background: white;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
+
         .product-item:hover {
-            border-color: var(--primary-color);
-            background-color: var(--primary-color-lighter);
+            border-color: #10b981;
+            background-color: #f0fdf4;
             transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
         }
+
         .product-item.selected {
-            border-color: var(--primary-color-dark);
-            background: linear-gradient(135deg, var(--primary-color-lighter), var(--primary-color-light));
-            box-shadow: 0 0 0 2px var(--primary-color-dark), var(--shadow-md); /* Clearer selection */
+            border-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
         }
+
         .product-name {
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 0.25rem;
-            color: var(--primary-color-darker);
+            color: #047857;
         }
+
         .product-info {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: #6b7280;
         }
-        .product-info .haltbar { /* "Haltbar" text */
-            color: var(--primary-color-dark); /* More emphasis */
+
+        .product-info .haltbar {
+            color: #10b981;
             font-weight: 700;
         }
+
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 0.75rem; /* Slightly less gap */
+            gap: 1rem;
         }
+
+        .quantity-button {
+            padding: 0.75rem;
+            background: #f0fdf4;
+            border: 2px solid #d1fae5;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #047857;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .quantity-button:hover {
+            background: #dcfce7;
+            border-color: #10b981;
+            transform: scale(1.05);
+        }
+
         .quantity-display {
             font-size: 1.8rem;
             font-weight: bold;
-            width: 3.5rem; /* Slightly narrower */
+            width: 4rem;
             text-align: center;
-            color: var(--primary-color-darker);
-        }
-        .preview-box {
-            border: 2px dashed var(--primary-color);
-            padding: 1.25rem; /* More padding */
-            border-radius: var(--border-radius-large);
-            background: linear-gradient(135deg, var(--primary-color-lighter), #e0f2fe); /* Lighter gradient */
-            margin-bottom: 1rem;
-        }
-        .preview-title {
-            font-size: 1.1rem; /* Larger */
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 1rem; /* More space */
-            color: var(--primary-color-darker);
-        }
-        .preview-label {
-            background: var(--background-light);
-            padding: 1rem;
-            border-radius: var(--border-radius-medium);
-            border: 1px solid var(--border-color);
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-        }
-        .preview-product-name {
-            font-size: 1.25rem; /* Larger */
-            font-weight: bold;
-            margin-bottom: 0.75rem;
-            color: var(--primary-color-darker);
-        }
-        .preview-date {
-            font-size: 1rem; /* Larger */
-            margin: 0.4rem 0;
-            color: var(--text-primary);
-            font-weight: 500; /* Medium */
+            color: #047857;
         }
 
-        /* Hidden Utility */
+        .preview-box {
+            border: 2px dashed #10b981;
+            padding: 1rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            margin-bottom: 1rem;
+        }
+
+        .preview-title {
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            color: #047857;
+        }
+
+        .preview-label {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid #d1fae5;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .preview-product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            color: #047857;
+        }
+
+        .preview-date {
+            font-size: 0.95rem;
+            margin: 0.4rem 0;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .print-button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .print-button.enabled {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .print-button.enabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .print-button.disabled {
+            background: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .help-text {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -867,22 +1119,22 @@
         /* Success Notification */
         .success-notification {
             position: fixed;
-            bottom: 2rem; /* From bottom for less obtrusiveness */
+            top: 2rem;
             right: 2rem;
-            background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color-darker)); /* Darker for more contrast */
-            color: var(--text-on-primary);
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
             padding: 1rem 1.5rem;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-lg);
-            font-weight: 500; /* Medium */
-            z-index: 2000; /* Ensure it's on top */
-            transform: translateX(calc(100% + 2rem)); /* Start off-screen */
-            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            font-weight: bold;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
         }
+
         .success-notification.show {
             transform: translateX(0);
         }
-
     </style>
 </head>
 <body>
@@ -905,11 +1157,11 @@
             max="999"
         >
         
-        <button id="loginButton" class="button-base button-primary login-button" onclick="login()">
+        <button id="loginButton" class="login-button" onclick="login()">
             Anmelden
         </button>
         
-        <button id="adminButton" class="button-base button-secondary admin-button" onclick="requestAdminAccess()">
+        <button id="adminButton" class="admin-button" onclick="requestAdminAccess()">
             🔐 Administrator-Bereich
         </button>
         
@@ -935,11 +1187,11 @@
             style="letter-spacing: 0.2rem; font-size: 1.5rem;"
         >
         
-        <button id="adminLoginButton" class="button-base button-primary login-button" onclick="verifyAdminPassword()">
+        <button id="adminLoginButton" class="login-button" onclick="verifyAdminPassword()">
             Zugang gewähren
         </button>
         
-        <button class="button-base button-secondary admin-button" onclick="showLoginScreen()">
+        <button class="admin-button" onclick="showLoginScreen()">
             ← Zurück
         </button>
         
@@ -951,12 +1203,12 @@
     <!-- Admin Panel -->
     <div id="adminPanel" class="admin-container hidden">
         <div class="admin-header">
-            <h2 class="admin-title">Administrator-Bereich</h2>
+            <h2 class="admin-title">🔐 Administrator-Bereich</h2>
             <div>
-                <button class="button-base button-secondary back-button" style="margin-right: 1rem;" onclick="showAdminSettings()">
+                <button class="back-button" style="margin-right: 1rem;" onclick="showAdminSettings()">
                     ⚙️ Einstellungen
                 </button>
-                <button class="button-base button-secondary back-button" onclick="logoutAdmin()">
+                <button class="back-button" onclick="logoutAdmin()">
                     ← Abmelden
                 </button>
             </div>
@@ -986,6 +1238,7 @@
                         maxlength="3"
                         min="0"
                         max="999"
+                        style="width: 120px;"
                     >
                     <input 
                         type="text" 
@@ -993,13 +1246,13 @@
                         class="add-user-input" 
                         placeholder="Kürzel"
                         maxlength="3"
-                        style="text-transform: uppercase;"
+                        style="width: 120px; text-transform: uppercase;"
                     >
-                    <button id="addUserButton" class="button-base button-primary add-user-button" onclick="addUser()">
+                    <button id="addUserButton" class="add-user-button" onclick="addUser()">
                         Hinzufügen
                     </button>
                 </div>
-                <div style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #22543d;">
                     Kürzel: 2-3 Buchstaben (z.B. MX, AB, JD)
                 </div>
             </div>
@@ -1017,7 +1270,7 @@
                     <h3 class="add-user-title">Neue Kategorie hinzufügen</h3>
                     <div class="form-row">
                         <div class="form-group-inline">
-                            <label class="label" for="newCategoryName">Kategorie-Name:</label>
+                            <label class="label">Kategorie-Name:</label>
                             <input 
                                 type="text" 
                                 id="newCategoryName" 
@@ -1025,7 +1278,7 @@
                                 placeholder="z.B. Neue Kategorie"
                             >
                         </div>
-                        <button class="button-base button-primary add-user-button" onclick="addCategory()">
+                        <button class="add-user-button" onclick="addCategory()">
                             Kategorie hinzufügen
                         </button>
                     </div>
@@ -1035,7 +1288,7 @@
             <!-- Product Editor View Tab -->
             <div id="productEditorViewTab" style="display: none;"> <!-- Initially hidden -->
                 <div class="category-header">
-                    <button class="button-base button-secondary back-to-categories" onclick="closeProductEditorView()">
+                    <button class="back-to-categories" onclick="closeProductEditorView()"> <!-- Adjusted JS function name -->
                         ← Zurück zu Kategorien
                     </button>
                     <h3 class="category-title">Produkte bearbeiten: <span id="editorCategoryName"></span></h3>
@@ -1045,76 +1298,72 @@
                     <!-- Products populated by JavaScript -->
                 </div>
 
-                <div class="add-category-section" style="margin-top: 1.5rem;">
+                <div class="add-category-section">
                     <h3 class="add-user-title">Neues Produkt hinzufügen</h3>
-                    <div class="product-editor-form">
-                        <div class="form-row">
-                            <div class="form-group-inline">
-                                <label class="label" for="newCategoryProductName">Produktname:</label>
-                                <input
-                                    type="text"
-                                    id="newCategoryProductName"
-                                    class="input"
-                                    placeholder="z.B. Neues Produkt"
-                                >
-                            </div>
-                            <div class="form-group-inline">
-                                <label class="label" for="newCategoryProductAuftau">Auftau (h):</label>
-                                <input
-                                    type="number"
-                                    id="newCategoryProductAuftau"
-                                    class="input input-small"
-                                    placeholder="24"
-                                    min="0"
-                                >
-                            </div>
-                            <div class="form-group-inline">
-                                <label class="label" for="newCategoryProductVorbereitet">Vorbereitet (h):</label>
-                                <input
-                                    type="number"
-                                    id="newCategoryProductVorbereitet"
-                                    class="input input-small"
-                                    placeholder="48"
-                                    min="0"
-                                >
-                            </div>
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label class="label">Produktname:</label>
+                            <input
+                                type="text"
+                                id="newCategoryProductName"
+                                class="input"
+                                placeholder="z.B. Neues Produkt"
+                            >
                         </div>
-                        <div class="form-row">
-                             <div class="form-group-inline">
-                                <label class="label" for="newCategoryProductAnbruch">Anbruch (h):</label>
-                                <input
-                                    type="number"
-                                    id="newCategoryProductAnbruch"
-                                    class="input input-small"
-                                    placeholder="120"
-                                    min="0"
-                                >
-                            </div>
-                            <div class="form-group-inline">
-                                <label class="label" for="newCategoryProductUmgefuellt">Umgefüllt (h):</label>
-                                <input
-                                    type="number"
-                                    id="newCategoryProductUmgefuellt"
-                                    class="input input-small"
-                                    placeholder="24"
-                                    min="0"
-                                >
-                            </div>
-                            <div class="form-group-inline">
-                                <label class="label" for="newCategoryProductLager">Lager:</label>
-                                <select id="newCategoryProductLager" class="input">
-                                    <option value="Gekühlt">Gekühlt</option>
-                                    <option value="Trockenlager">Trockenlager</option>
-                                </select>
-                            </div>
+                        <div class="form-group-inline">
+                            <label class="label">Auftau (h):</label>
+                            <input
+                                type="number"
+                                id="newCategoryProductAuftau"
+                                class="input input-small"
+                                placeholder="24"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Vorbereitet (h):</label>
+                            <input
+                                type="number"
+                                id="newCategoryProductVorbereitet"
+                                class="input input-small"
+                                placeholder="48"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Anbruch (h):</label>
+                            <input
+                                type="number"
+                                id="newCategoryProductAnbruch"
+                                class="input input-small"
+                                placeholder="120"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Umgefüllt (h):</label>
+                            <input
+                                type="number"
+                                id="newCategoryProductUmgefuellt"
+                                class="input input-small"
+                                placeholder="24"
+                                min="0"
+                            >
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="label">Lager:</label>
+                            <select id="newCategoryProductLager" class="input">
+                                <option value="Gekühlt">Gekühlt</option>
+                                <option value="Trockenlager">Trockenlager</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-row" style="margin-top: 1.5rem;">
-                        <button class="button-base button-primary add-user-button" onclick="addNewProductToCategory()">
+                    <div class="form-row" style="margin-top: 1rem;">
+                        <button class="add-user-button" onclick="addNewProductToCategory()">
                             Produkt hinzufügen
                         </button>
                     </div>
-                    <div style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #22543d;">
                         Tipp: Mindestens ein Haltbarkeitswert muss angegeben werden.
                     </div>
                 </div>
@@ -1123,24 +1372,24 @@
 
         <!-- Backups Tab -->
         <div id="adminBackupsTab" class="tab-content">
-            <div class="backup-section">
-                <h3 class="backup-title">
+            <div class="backup-section" style="margin-bottom: 0; border: none; background: none; padding: 1rem 0;"> <!-- Adjusted styles for tab content -->
+                <h3 class="backup-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;"> <!-- Larger title for tab context -->
                     💾 Backup & Wiederherstellung
                 </h3>
                 <div class="backup-buttons">
-                    <button class="button-base button-primary backup-button" onclick="createBackup()">
+                    <button class="backup-button" onclick="createBackup()">
                         📦 Backup erstellen
                     </button>
-                    <button class="button-base backup-button restore" onclick="document.getElementById('restoreFile').click()">
+                    <button class="backup-button restore" onclick="document.getElementById('restoreFile').click()">
                         📥 Backup wiederherstellen
                     </button>
                 </div>
                 <input type="file" id="restoreFile" class="file-input" accept=".json" onchange="restoreBackup(event)">
-                <div class="backup-info">
+                <div class="backup-info" style="margin-top: 1.5rem;">
                     <strong>Backup enthält:</strong> Alle Benutzerprofile, Kategorien, Produkte und Einstellungen<br>
                     <strong>Tipp:</strong> Erstellen Sie regelmäßig Backups vor wichtigen Änderungen
                 </div>
-                <div id="backupStatus" class="backup-status"></div>
+                <div id="backupStatus" class="backup-status" style="margin-top: 1.5rem;"></div>
             </div>
         </div>
     </div>
@@ -1148,41 +1397,41 @@
     <!-- Admin Settings Modal -->
     <div id="adminSettingsModal" class="modal-overlay hidden">
         <div class="modal">
-            <div class="modal-header" style="margin-bottom: 2rem;">
+            <div class="modal-header">
                 <h3 class="modal-title">⚙️ Administrator-Einstellungen</h3>
-                <button class="button-base button-secondary close-button" onclick="closeAdminSettings()">✕</button>
+                <button class="close-button" onclick="closeAdminSettings()">✕</button>
             </div>
             
-            <div class="form-group" style="margin-bottom: 1rem;">
-                <label class="label" for="currentAdminPassword">Admin-Passwort ändern:</label>
+            <div class="form-group">
+                <label class="label">Admin-Passwort ändern:</label>
                 <input type="password" id="currentAdminPassword" class="input" placeholder="Aktuelles Passwort">
             </div>
             
-            <div class="form-group" style="margin-bottom: 1rem;">
-                <label class="label" for="newAdminPassword">Neues Passwort:</label>
+            <div class="form-group">
+                <label class="label">Neues Passwort:</label>
                 <input type="password" id="newAdminPassword" class="input" placeholder="Neues Passwort">
             </div>
             
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label class="label" for="confirmAdminPassword">Passwort bestätigen:</label>
+            <div class="form-group">
+                <label class="label">Passwort bestätigen:</label>
                 <input type="password" id="confirmAdminPassword" class="input" placeholder="Passwort wiederholen">
             </div>
             
-            <div class="form-row" style="justify-content: flex-end; gap: 0.75rem;"> <!-- Align buttons to right -->
-                <button class="button-base button-secondary back-button" onclick="closeAdminSettings()">
-                    Abbrechen
-                </button>
-                <button class="button-base button-primary add-user-button" onclick="changeAdminPassword()">
+            <div class="form-row" style="margin-top: 1.5rem;">
+                <button class="add-user-button" onclick="changeAdminPassword()">
                     Passwort ändern
+                </button>
+                <button class="back-button" onclick="closeAdminSettings()">
+                    Abbrechen
                 </button>
             </div>
             
-            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color-light);">
-                <h4 style="color: var(--primary-color-darker); margin-bottom: 0.75rem; font-size: 1rem; font-weight: 600;">Aktuelles Passwort:</h4>
-                <div style="font-family: monospace; background: var(--primary-color-lighter); padding: 0.75rem 1rem; border-radius: var(--border-radius-medium); color: var(--primary-color-darker); word-break: break-all;" id="currentPasswordDisplay">
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #d1fae5;">
+                <h4 style="color: #047857; margin-bottom: 1rem;">Aktuelles Passwort:</h4>
+                <div style="font-family: monospace; background: #f0fdf4; padding: 1rem; border-radius: 10px; color: #22543d; word-break: break-all;" id="currentPasswordDisplay">
                     ${ADMIN_PASSWORD}
                 </div>
-                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">
                     Standard-Passwort: admin2024
                 </div>
             </div>
@@ -1197,7 +1446,7 @@
                     <span class="current-user">Angemeldet als: <strong>${currentUser.shortcode}</strong> (PIN ${currentUser.pin})</span>
                 </div>
                 <div>
-                    <button class="button-base button-danger logout-button" onclick="logout()">
+                    <button class="logout-button" onclick="logout()">
                         Abmelden
                     </button>
                 </div>
@@ -1612,11 +1861,11 @@
         }
 
         function showAdminTab(tabName) {
-            document.querySelectorAll('.admin-tab').forEach(tab => {
+            document.querySelectorAll('#adminPanel .admin-tab').forEach(tab => { // Target tabs inside adminPanel
                 tab.classList.remove('active');
             });
             
-            const targetTabButton = Array.from(document.querySelectorAll('.admin-tab')).find(tab => {
+            const targetTabButton = Array.from(document.querySelectorAll('#adminPanel .admin-tab')).find(tab => {
                 const tabKey = tab.getAttribute('onclick').match(/'([^']+)'/)[1];
                 return tabKey === tabName;
             });
@@ -1626,30 +1875,30 @@
             }
 
             document.querySelectorAll('#adminPanel .tab-content').forEach(content => {
-                content.classList.remove('active'); // Handled by CSS .tab-content
-                content.style.display = 'none'; // Explicitly hide
+                // content.classList.remove('active'); // This is handled by the CSS logic with display:flex/none
+                content.style.display = 'none'; // Explicitly hide all first
             });
 
             let activeTabContent;
             if (tabName === 'users') {
                 activeTabContent = document.getElementById('adminUsersTab');
                 updateUserGrid();
-                document.getElementById('newUserPin').focus();
+                if (document.getElementById('newUserPin')) document.getElementById('newUserPin').focus();
             } else if (tabName === 'products') {
                 activeTabContent = document.getElementById('adminProductsTab');
                 // Default to categories overview inside products tab
-                document.getElementById('categoriesOverviewTab').style.display = 'block';
-                document.getElementById('categoriesOverviewTab').classList.add('active');
+                document.getElementById('categoriesOverviewTab').style.display = 'block'; // Show this part
+                // document.getElementById('categoriesOverviewTab').classList.add('active'); // It's already active by structure
                 document.getElementById('productEditorViewTab').style.display = 'none';
-                document.getElementById('productEditorViewTab').classList.remove('active');
+                // document.getElementById('productEditorViewTab').classList.remove('active');
                 updateCategoryGrid();
             } else if (tabName === 'backups') {
                 activeTabContent = document.getElementById('adminBackupsTab');
             }
 
             if (activeTabContent) {
-                activeTabContent.style.display = 'block';
-                activeTabContent.classList.add('active');
+                activeTabContent.style.display = 'flex'; // Use flex as per new CSS rule for active tabs
+                activeTabContent.classList.add('active'); // Ensure .active class is there for other potential CSS
             }
         }
 
@@ -1715,8 +1964,10 @@
                 document.getElementById('pinInput').value = '';
                  // Shake animation for login container (optional)
                 const loginContainer = document.getElementById('loginScreen');
-                loginContainer.style.animation = 'shake 0.5s';
-                setTimeout(() => { loginContainer.style.animation = ''; }, 500);
+                if(loginContainer) { // Check if element exists
+                    loginContainer.style.animation = 'shake 0.5s';
+                    setTimeout(() => { loginContainer.style.animation = ''; }, 500);
+                }
             }
         }
 
@@ -1730,14 +1981,15 @@
 
         function showLoginError() {
             const errorDiv = document.getElementById('loginError');
-            errorDiv.classList.remove('hidden');
+            if(errorDiv) errorDiv.classList.remove('hidden');
             setTimeout(() => {
                 hideLoginError();
             }, 3000);
         }
 
         function hideLoginError() {
-            document.getElementById('loginError').classList.add('hidden');
+            const errorDiv = document.getElementById('loginError');
+            if(errorDiv) errorDiv.classList.add('hidden');
         }
 
         function showLoginScreen() {
@@ -1757,9 +2009,11 @@
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             
-            const userInfoBar = document.querySelector('.user-info-bar div:first-child'); // More specific selector
+            const userInfoBar = document.querySelector('#mainApp .user-info-bar div:first-child'); // More specific selector
             if (currentUser && userInfoBar) { // Check if currentUser is set
                  userInfoBar.innerHTML = `<span class="current-user">Angemeldet als: <strong>${currentUser.shortcode}</strong> (PIN ${currentUser.pin})</span>`;
+            } else if (userInfoBar) { // Clear if no current user
+                 userInfoBar.innerHTML = `<span class="current-user">Nicht angemeldet</span>`;
             }
             
             preparationTime = new Date(); // Reset/update time
@@ -1777,7 +2031,7 @@
                 userCard.innerHTML = `
                     <div>
                         <div class="user-pin">${user.pin}</div>
-                        <div style="font-size: 1.2rem; font-weight: 600; color: var(--secondary-color-dark); margin: 0.25rem 0 0.5rem;">${user.shortcode}</div>
+                        <div style="font-size: 1.2rem; font-weight: 600; color: #2563eb; margin: 0.25rem 0 0.5rem;">${user.shortcode}</div>
                         <div class="user-info">Erstellt: ${user.created}</div>
                     </div>
                     <button class="delete-button" title="Benutzer löschen" data-index="${index}">×</button>
@@ -1841,8 +2095,8 @@
                     <div class="category-name">${categoryName}</div>
                     <div class="product-count">${items.length} Produkte</div>
                     <div class="category-actions">
-                        <button class="button-base btn-edit btn-small">✏️ Produkte bearbeiten</button>
-                        <button class="button-base btn-delete btn-small">🗑️ Kategorie löschen</button>
+                        <button class="btn-small btn-edit">✏️ Produkte bearbeiten</button>
+                        <button class="btn-small btn-delete">🗑️ Kategorie löschen</button>
                     </div>
                     <div class="product-mini-list">
                         ${items.slice(0, 3).map(item => `<div class="product-mini-item">${item.name}</div>`).join('')}
@@ -1857,9 +2111,9 @@
 
         function openProductEditorView(categoryName) {
             document.getElementById('categoriesOverviewTab').style.display = 'none';
-            document.getElementById('categoriesOverviewTab').classList.remove('active');
-            document.getElementById('productEditorViewTab').style.display = 'block';
-            document.getElementById('productEditorViewTab').classList.add('active');
+            // document.getElementById('categoriesOverviewTab').classList.remove('active'); // Not strictly needed if display controls it
+            document.getElementById('productEditorViewTab').style.display = 'flex'; // Changed to flex
+            document.getElementById('productEditorViewTab').classList.add('active'); // Ensure active if other styles depend on it
             
             document.getElementById('editorCategoryName').textContent = categoryName;
             currentEditingCategory = categoryName;
@@ -1909,8 +2163,8 @@
                             </div>
                             <div class="form-group-inline" style="justify-content: flex-end;">
                                 <div style="display: flex; gap: 0.5rem; margin-top: auto;">
-                                    <button class="button-base button-secondary btn-small save-product-btn">💾 Speichern</button>
-                                    <button class="button-base btn-delete btn-small delete-product-btn">🗑️ Löschen</button>
+                                    <button class="btn-small btn-edit save-product-btn">💾 Speichern</button>
+                                    <button class="btn-small btn-delete delete-product-btn">🗑️ Löschen</button>
                                 </div>
                             </div>
                         </div>
@@ -1949,7 +2203,6 @@
             };
             saveProducts();
             showSuccessNotification(`"${name}" wurde gespeichert!`);
-            // No reload needed, changes are in place. Could add visual feedback to saved item.
         }
 
         function deleteProductFromEditor(categoryName, index) {
@@ -1958,8 +2211,8 @@
             
             products[categoryName].splice(index, 1);
             saveProducts();
-            loadCategoryProducts(categoryName); // Reload this category's products
-            updateCategoryGrid(); // Update product counts on category cards
+            loadCategoryProducts(categoryName);
+            updateCategoryGrid();
             showSuccessNotification(`"${product.name}" wurde gelöscht!`);
         }
 
@@ -1992,8 +2245,8 @@
             
             products[categoryName].push(newProduct);
             saveProducts();
-            loadCategoryProducts(categoryName); // Reload this category
-            updateCategoryGrid(); // Update product counts
+            loadCategoryProducts(categoryName);
+            updateCategoryGrid();
             
             document.getElementById('newCategoryProductName').value = '';
             document.getElementById('newCategoryProductAuftau').value = '';
@@ -2006,11 +2259,11 @@
 
         function closeProductEditorView() {
             document.getElementById('productEditorViewTab').style.display = 'none';
-            document.getElementById('productEditorViewTab').classList.remove('active');
-            document.getElementById('categoriesOverviewTab').style.display = 'block';
-            document.getElementById('categoriesOverviewTab').classList.add('active');
+            // document.getElementById('productEditorViewTab').classList.remove('active');
+            document.getElementById('categoriesOverviewTab').style.display = 'block'; // Or 'flex' if it's also a flex container
+            // document.getElementById('categoriesOverviewTab').classList.add('active');
             currentEditingCategory = null;
-            updateCategoryGrid(); // Refresh category grid in case counts changed
+            updateCategoryGrid();
         }
 
         function addCategory() {
@@ -2021,7 +2274,6 @@
             products[categoryName] = [];
             saveProducts();
             updateCategoryGrid();
-            // updateProductCategorySelect(); // This function was for an old product tab, can be removed
             document.getElementById('newCategoryName').value = '';
             showSuccessNotification(`Kategorie "${categoryName}" wurde hinzugefügt!`);
         }
@@ -2036,24 +2288,22 @@
             delete products[categoryName];
             saveProducts();
             updateCategoryGrid();
-            // updateProductCategorySelect(); // Remove if not used
             showSuccessNotification(`Kategorie "${categoryName}" wurde gelöscht!`);
         }
 
-        // Dummy function, falls noch irgendwo Referenzen existieren (sollte nicht mehr der Fall sein)
-        function updateProductCategorySelect() { /* console.log('updateProductCategorySelect called but is deprecated'); */ }
-        function editProduct() { /* console.log('editProduct (old modal) called but is deprecated'); */ }
-        function closeEditProductModal() { /* console.log('closeEditProductModal called but is deprecated'); */ }
-        function saveEditProduct() { /* console.log('saveEditProduct (old modal) called but is deprecated'); */ }
-        function deleteProduct() { /* console.log('deleteProduct (old modal) called but is deprecated'); */ }
-        function loadProductsForCategory() { /* console.log('loadProductsForCategory (old modal) called but is deprecated'); */ }
+        function updateProductCategorySelect() { /* Deprecated */ }
+        function editProduct() { /* Deprecated */ }
+        function closeEditProductModal() { /* Deprecated */ }
+        function saveEditProduct() { /* Deprecated */ }
+        function deleteProduct() { /* Deprecated */ }
+        function loadProductsForCategory() { /* Deprecated */ }
 
 
         // Hauptapp
         function initializeMainApp() {
             preparationTime = new Date();
             document.getElementById('preparationTime').value = preparationTime.toISOString().slice(0, 16);
-            renderCategories(); // Changed from renderProducts to renderCategories for clarity
+            renderCategories();
             showCategories();
             
             document.getElementById('preparationTime').addEventListener('change', function(e) {
@@ -2062,28 +2312,29 @@
             });
         }
 
-        function renderCategories() { // Renamed from renderProducts
+        function renderCategories() {
             const categoryView = document.getElementById('categoryView');
             if (!categoryView) return;
             categoryView.innerHTML = '';
 
             Object.entries(products).forEach(([category, items]) => {
                 const categoryButton = document.createElement('button');
-                // Apply base button styles + specific category button styles if needed
-                categoryButton.className = 'button-base button-primary category-button';
+                categoryButton.className = 'category-button';
                 categoryButton.innerHTML = `${category} <span style="font-size: 0.8em; opacity: 0.8;">(${items.length})</span>`;
-                categoryButton.onclick = () => showProductsInCategory(category); // Renamed for clarity
+                categoryButton.onclick = () => showProductsInCategory(category);
                 categoryView.appendChild(categoryButton);
             });
         }
 
-        function showProductsInCategory(category) { // Renamed from showProducts
+        function showProductsInCategory(category) {
             currentCategory = category;
             const items = products[category];
             
             document.getElementById('categoryView').style.display = 'none';
-            document.getElementById('productsView').style.display = 'block';
-            document.getElementById('currentCategoryTitle').textContent = `${category}`; // Simpler title
+            document.getElementById('productsView').style.display = 'flex'; // Changed to flex
+            document.getElementById('productsView').style.flexDirection = 'column'; // Ensure column direction
+
+            document.getElementById('currentCategoryTitle').textContent = `${category}`;
             
             const productsListDiv = document.getElementById('productsList');
             productsListDiv.innerHTML = items.map((product, index) => `
@@ -2097,17 +2348,16 @@
                     </div>
                 </button>
             `).join('');
-            // Scroll to top of product list
             productsListDiv.scrollTop = 0;
         }
 
         function showCategories() {
-            document.getElementById('categoryView').style.display = 'block';
+            document.getElementById('categoryView').style.display = 'block'; // Or 'flex' if it's a flex container
             document.getElementById('productsView').style.display = 'none';
             currentCategory = null;
-            selectedProduct = null; // Deselect product when going back to categories
-            updatePreview(); // Clear preview
-            updatePrintButton(); // Disable print button
+            selectedProduct = null;
+            updatePreview();
+            updatePrintButton();
             
             const productItems = document.querySelectorAll('.product-item');
             if (productItems) productItems.forEach(item => item.classList.remove('selected'));
@@ -2117,7 +2367,7 @@
             selectedProduct = products[category][index];
             
             document.querySelectorAll('.product-item').forEach(item => item.classList.remove('selected'));
-            if (event && event.target) { // Ensure event and target exist
+            if (event && event.target) {
                  event.target.closest('.product-item').classList.add('selected');
             }
             
@@ -2136,7 +2386,7 @@
 
         function calculateExpiryDateTime(product) {
             if (!product) return null;
-            const hours = product.vorbereitet || product.anbruch || product.auftau || 24; // Default to 24h if nothing specified
+            const hours = product.vorbereitet || product.anbruch || product.auftau || 24;
             const expiry = new Date(preparationTime.getTime() + hours * 60 * 60 * 1000);
             return expiry;
         }
@@ -2153,7 +2403,7 @@
             const previewArea = document.getElementById('previewArea');
             if (!previewArea) return;
 
-            if (!selectedProduct || !currentUser) { // Also check for currentUser
+            if (!selectedProduct || !currentUser) {
                 previewArea.innerHTML = '<div class="preview-box" style="text-align:center; color: var(--text-muted);">Produkt auswählen</div>';
                 return;
             }
@@ -2168,7 +2418,7 @@
                     <div class="preview-label">
                         <div class="preview-product-name">${selectedProduct.name}</div>
                         <div class="preview-date">Zubereitet: ${formattedPrep.date} / ${formattedPrep.time}</div>
-                        <div class="preview-date" style="font-weight: bold; color: var(--primary-color-dark);">Haltbar bis: ${formattedExpiry.date} / ${formattedExpiry.time}</div>
+                        <div class="preview-date" style="font-weight: bold; color: #059669;">Haltbar bis: ${formattedExpiry.date} / ${formattedExpiry.time}</div>
                         <div class="preview-date" style="font-size: 0.9em; margin-top: 0.5em;">Kürzel: ${currentUser.shortcode}</div>
                     </div>
                 </div>
@@ -2184,11 +2434,11 @@
             notification.innerHTML = `✅ ${message}`;
             document.body.appendChild(notification);
             
-            setTimeout(() => notification.classList.add('show'), 50); // Slight delay for transition
+            setTimeout(() => notification.classList.add('show'), 50);
             
             setTimeout(() => {
                 notification.classList.remove('show');
-                setTimeout(() => { if (notification.parentNode) notification.remove(); }, 400);
+                setTimeout(() => { if (notification.parentNode) notification.remove(); }, 300);
             }, 3000);
         }
 
@@ -2197,19 +2447,14 @@
             const printText = document.getElementById('printText');
             if(!printButton || !printText) return;
 
-            // Explicitly make sure the button is visible.
-            // .button-base uses display: inline-flex or flex.
-            // The container of printButton is a flex item in a column flex container (.card)
-            // So, 'flex' or 'inline-flex' should be fine. 'block' might also work if it's full width.
-            // Let's stick to what .button-base implies.
             printButton.style.display = 'inline-flex';
             
             if (selectedProduct) {
-                printButton.className = 'button-base button-primary print-button enabled';
+                printButton.className = 'print-button enabled';
                 printText.textContent = `${quantity} Label${quantity > 1 ? 's' : ''} drucken`;
             } else {
-                printButton.className = 'button-base print-button disabled';
-                printText.textContent = 'Label drucken'; // Generic text when disabled
+                printButton.className = 'print-button disabled';
+                printText.textContent = 'Label drucken';
             }
         }
 
@@ -2225,13 +2470,13 @@
                 preparationDate: prepFormatted.date,
                 preparationTime: prepFormatted.time,
                 expiryDate: expiryFormatted.date,
-                expiryTime: expiryFormatted.time, // Added expiryTime for more detailed labels
+                expiryTime: expiryFormatted.time,
                 userShortcode: currentUser.shortcode,
                 quantity: quantity,
-                userPin: currentUser.pin // Changed from user to userPin for clarity
+                userPin: currentUser.pin
             };
 
-            if (typeof require !== 'undefined') { // Electron environment
+            if (typeof require !== 'undefined') {
                 try {
                     const { ipcRenderer } = require('electron');
                     const result = await ipcRenderer.invoke('print-label', labelData);
@@ -2244,10 +2489,8 @@
                 } catch (error) {
                     console.error("IPC Error:", error);
                     alert(`❌ Verbindungsfehler zum Druckdienst: ${error.message}`);
-                    // Fallback to browser print if IPC fails catastrophically
-                    // openBrowserPrint(labelData);
                 }
-            } else { // Browser environment (fallback)
+            } else {
                 openBrowserPrint(labelData);
             }
         }
@@ -2263,17 +2506,14 @@
             printWindow.document.write(labelHtml);
             printWindow.document.close();
             printWindow.focus();
-            // Delay print command to allow content to render
             setTimeout(() => {
                 printWindow.print();
-                // printWindow.close(); // Optional: close after printing
             }, 500);
         }
 
         function generateBrowserPrintHTML(labelData) {
             let labelsHtml = '';
             for (let i = 0; i < labelData.quantity; i++) {
-                // Using original class names and structure
                 labelsHtml += `
                     <div class="label">
                         <div class="product-name">${labelData.productName}</div>
@@ -2293,30 +2533,30 @@
                     <style>
                         @page { size: 58mm auto; margin: 2mm; }
                         body {
-                            font-family: 'Courier New', monospace !important; /* Ensure this font is used */
-                            font-size: 12px !important; /* Ensure this base size */
+                            font-family: 'Courier New', monospace !important;
+                            font-size: 12px !important;
                             margin: 0;
                             padding: 2mm;
                             text-align: center;
-                            color: black !important; /* Ensure black text for printing */
+                            color: black !important;
                         }
                         .label {
                             width: 54mm;
                             margin-bottom: 5mm;
                             page-break-after: always;
-                            border: 1px dashed #999; /* Keep border for testing, print CSS removes it */
+                            border: 1px dashed #999;
                             padding: 3mm;
-                            box-sizing: border-box; /* Ensure padding doesn't expand width */
+                            box-sizing: border-box;
                         }
                         .product-name {
-                            font-family: 'Courier New', monospace !important; /* Redundant but safe */
+                            font-family: 'Courier New', monospace !important;
                             font-size: 16px !important;
                             font-weight: bold !important;
                             margin-bottom: 3mm;
                             text-transform: uppercase;
                         }
                         .date-info {
-                            font-family: 'Courier New', monospace !important; /* Redundant but safe */
+                            font-family: 'Courier New', monospace !important;
                             font-size: 12px !important;
                             margin: 2mm 0;
                             font-weight: bold !important;
@@ -2340,3 +2580,5 @@
     </script>
 </body>
 </html>
+
+[end of index.html]
