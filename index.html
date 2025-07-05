@@ -694,21 +694,12 @@
             flex-direction: column;
             overflow: hidden;
         }
-        .title { /* Main app title "Gastrofy" */
-            font-size: 2rem; /* Larger */
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 1rem; /* More space */
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-darker));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+        /* .title rule can be removed or left, it won't be used */
         .user-info-bar {
             background: var(--background-light);
             border-radius: var(--border-radius-large);
             padding: 0.75rem 1.5rem; /* Adjusted padding */
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem; /* Increased margin to compensate for removed title */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -736,10 +727,28 @@
         }
         .scroll-area { /* For product list and category list */
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* Primary scrollbar here */
             overflow-x: hidden;
-            padding-right: 0.75rem; /* Space for scrollbar */
-            min-height: 0; /* Fix for flexbox overflow */
+            min-height: 0; /* Crucial for flex children that need to scroll */
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack categoryView and productsView */
+        }
+        /* Ensure direct children of scroll-area can take up space but don't shrink unnecessarily */
+        .scroll-area > .category-view,
+        .scroll-area > .products-view {
+            flex-shrink: 0; /* Prevent shrinking if content is smaller than available space */
+        }
+        #productsView { /* This is a direct child of .scroll-area when active */
+            display: none; /* Controlled by JS */
+            flex-direction: column; /* Stack its own children (header, list) */
+            flex: 1; /* Allow it to take available space in scroll-area if categoryView is hidden */
+            min-height: 0; /* Important if it becomes a scroll container itself, or for its children */
+        }
+        #productsList {
+            flex-grow: 1; /* Allow productList to take up available space within productsView */
+            overflow-y: auto; /* If productsView itself doesn't scroll, productList should */
+            min-height: 0; /* If productsView is flex, this helps productList scroll */
+             padding-right: 0.5rem; /* Space for its own scrollbar if it scrolls */
         }
         .category-title { /* In main app product view */
             font-size: 1.3rem;
@@ -1190,7 +1199,7 @@
                 </div>
             </div>
 
-            <h1 class="title">🏷️ Gastrofy</h1>
+            <!-- <h1 class="title">🏷️ Gastrofy</h1> Removed this title -->
             
             <div class="grid">
                 <div class="card">
@@ -2253,18 +2262,17 @@
         function generateBrowserPrintHTML(labelData) {
             let labelsHtml = '';
             for (let i = 0; i < labelData.quantity; i++) {
+                // Using original class names and structure
                 labelsHtml += `
-                    <div class="label-print">
-                        <div class="product-name-print">${labelData.productName}</div>
-                        <div class="date-info-print">Zub.: ${labelData.preparationDate} ${labelData.preparationTime}</div>
-                        <div class="date-info-print">Verw.b.: ${labelData.expiryDate} ${labelData.expiryTime}</div>
-                        <div class="user-info-print">${labelData.userShortcode}</div>
+                    <div class="label">
+                        <div class="product-name">${labelData.productName}</div>
+                        <div class="date-info">${labelData.preparationDate}</div>
+                        <div class="date-info">${labelData.expiryDate}</div>
+                        <div class="date-info">${labelData.preparationTime} - ${labelData.userShortcode}</div>
                     </div>
                 `;
             }
 
-            // Standard 58mm thermal paper, adjust font sizes for it.
-            // Roughly 20-24 characters per line with common fonts at 10-12pt.
             return `
                 <!DOCTYPE html>
                 <html>
@@ -2272,48 +2280,12 @@
                     <meta charset="utf-8">
                     <title>Label - ${labelData.productName}</title>
                     <style>
-                        @page {
-                            size: 57mm 25mm; /* Common label size, adjust as needed */
-                            margin: 1mm;
-                        }
-                        body {
-                            font-family: Arial, sans-serif; /* Sans-serif is often clearer on thermal */
-                            font-size: 8pt; /* Smaller base font for small labels */
-                            margin: 0;
-                            padding: 0;
-                            text-align: center;
-                        }
-                        .label-print {
-                            width: 55mm; /* Full width within margins */
-                            height: 23mm; /* Full height */
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                            align-items: center;
-                            page-break-after: always; /* Each label on a new page/cut */
-                            /* border: 1px dashed #ccc; /* For testing layout */
-                        }
-                        .product-name-print {
-                            font-size: 10pt; /* Larger for product name */
-                            font-weight: bold;
-                            margin-bottom: 1mm;
-                            text-transform: uppercase;
-                            line-height: 1.1;
-                        }
-                        .date-info-print {
-                            font-size: 8pt;
-                            margin: 0.5mm 0;
-                            font-weight: normal; /* Normal weight for dates */
-                            line-height: 1.1;
-                        }
-                        .user-info-print {
-                            font-size: 7pt;
-                            margin-top: 1mm;
-                            font-weight: bold;
-                        }
-                        @media print {
-                            .label-print { border: none; }
-                        }
+                        @page { size: 58mm auto; margin: 2mm; }
+                        body { font-family: 'Courier New', monospace; font-size: 12px; margin: 0; padding: 2mm; text-align: center; }
+                        .label { width: 54mm; margin-bottom: 5mm; page-break-after: always; border: 1px dashed #999; padding: 3mm; }
+                        .product-name { font-size: 16px; font-weight: bold; margin-bottom: 3mm; text-transform: uppercase; }
+                        .date-info { font-size: 12px; margin: 2mm 0; font-weight: bold; }
+                        @media print { .label { margin: 0; border: none; page-break-after: always; padding: 2mm; } }
                     </style>
                 </head>
                 <body>
