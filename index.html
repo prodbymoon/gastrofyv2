@@ -883,33 +883,33 @@
 
         .scroll-area {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto; /* Primary scrollbar here */
             overflow-x: hidden;
-            padding-right: 0.5rem;
-            min-height: 0;
+            min-height: 0; /* Crucial for flex children that need to scroll */
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack categoryView and productsView */
         }
-
-        .category-button {
-            width: 100%;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            padding: 1rem;
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        /* Ensure direct children of scroll-area can take up space but don't shrink unnecessarily */
+        .scroll-area > .category-view,
+        .scroll-area > .products-view {
+            flex-shrink: 0; /* Prevent shrinking if content is smaller than available space */
         }
-
-        .category-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        #productsView { /* This is a direct child of .scroll-area when active */
+            display: none; /* Controlled by JS */
+            flex: 1; /* Takes all available space in .scroll-area when active */
+            flex-direction: column; /* Stack header and product list */
+            min-height: 0; /* Allows its children to scroll */
+            overflow: hidden; /* Crucial: productsView itself should not scroll, its child #productsList should */
         }
-
-        .category-title {
+        #productsList { /* The actual list of product items */
+            flex-grow: 1; /* Takes all available space within #productsView (after .category-header) */
+            overflow-y: auto; /* This is where the product items should scroll */
+            min-height: 0; /* Necessary for flex item to scroll */
+            padding-right: 0.5rem; /* Space for scrollbar */
+            /* Test with an explicit max-height to see if scrolling triggers */
+            /* max-height: 300px; */ /* You can uncomment this for testing if flex calculations fail */
+        }
+        .category-title { /* In main app product view */
             font-size: 1.2rem;
             font-weight: 700;
             color: #047857;
@@ -956,7 +956,7 @@
         }
 
         .products-view {
-            display: none;
+            display: none; /* Initial state, JS toggles to flex */
         }
 
         .product-item {
@@ -2580,5 +2580,3 @@
     </script>
 </body>
 </html>
-
-[end of index.html]
