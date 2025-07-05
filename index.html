@@ -427,6 +427,9 @@
             box-shadow: var(--shadow-md); /* Softer shadow */
             transition: all 0.2s ease-in-out;
             position: relative; /* For absolute positioned children like delete button */
+            display: flex; /* Ensure it's a flex container */
+            flex-direction: column; /* Stack children vertically */
+            /* overflow: hidden; --- REMOVED THIS LINE --- */
         }
         .user-card:hover,
         .category-card:hover,
@@ -725,30 +728,29 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
-        .scroll-area { /* For product list and category list */
-            flex: 1;
-            overflow-y: auto; /* Primary scrollbar here */
-            overflow-x: hidden;
+        .scroll-area {
+            flex: 1; /* Takes available vertical space in .card */
             min-height: 0; /* Crucial for flex children that need to scroll */
-            display: flex; /* Make it a flex container */
-            flex-direction: column; /* Stack categoryView and productsView */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Contains its children, scrolling is delegated further down or handled if children are too big */
         }
-        /* Ensure direct children of scroll-area can take up space but don't shrink unnecessarily */
-        .scroll-area > .category-view,
-        .scroll-area > .products-view {
-            flex-shrink: 0; /* Prevent shrinking if content is smaller than available space */
+        .scroll-area > .category-view {
+            /* This view might not need to scroll if categories are few. */
+            /* If it does, it would need overflow-y: auto and a defined height/max-height */
         }
-        #productsView { /* This is a direct child of .scroll-area when active */
+        .scroll-area > .products-view { /* This is #productsView */
             display: none; /* Controlled by JS */
-            flex-direction: column; /* Stack its own children (header, list) */
-            flex: 1; /* Allow it to take available space in scroll-area if categoryView is hidden */
-            min-height: 0; /* Important if it becomes a scroll container itself, or for its children */
+            flex: 1; /* Takes all available space in .scroll-area when active */
+            flex-direction: column;
+            min-height: 0; /* Allows its children to scroll */
+            overflow: hidden; /* Important: productsView itself should not scroll, but its child productList */
         }
-        #productsList {
-            flex-grow: 1; /* Allow productList to take up available space within productsView */
-            overflow-y: auto; /* If productsView itself doesn't scroll, productList should */
-            min-height: 0; /* If productsView is flex, this helps productList scroll */
-             padding-right: 0.5rem; /* Space for its own scrollbar if it scrolls */
+        #productsList { /* The actual list of product items */
+            flex-grow: 1; /* Takes all available space within #productsView (after .category-header) */
+            overflow-y: auto; /* This is where the product items should scroll */
+            min-height: 0; /* Necessary for flex item to scroll */
+            padding-right: 0.5rem; /* Space for scrollbar */
         }
         .category-title { /* In main app product view */
             font-size: 1.3rem;
@@ -2281,11 +2283,43 @@
                     <title>Label - ${labelData.productName}</title>
                     <style>
                         @page { size: 58mm auto; margin: 2mm; }
-                        body { font-family: 'Courier New', monospace; font-size: 12px; margin: 0; padding: 2mm; text-align: center; }
-                        .label { width: 54mm; margin-bottom: 5mm; page-break-after: always; border: 1px dashed #999; padding: 3mm; }
-                        .product-name { font-size: 16px; font-weight: bold; margin-bottom: 3mm; text-transform: uppercase; }
-                        .date-info { font-size: 12px; margin: 2mm 0; font-weight: bold; }
-                        @media print { .label { margin: 0; border: none; page-break-after: always; padding: 2mm; } }
+                        body {
+                            font-family: 'Courier New', monospace !important; /* Ensure this font is used */
+                            font-size: 12px !important; /* Ensure this base size */
+                            margin: 0;
+                            padding: 2mm;
+                            text-align: center;
+                            color: black !important; /* Ensure black text for printing */
+                        }
+                        .label {
+                            width: 54mm;
+                            margin-bottom: 5mm;
+                            page-break-after: always;
+                            border: 1px dashed #999; /* Keep border for testing, print CSS removes it */
+                            padding: 3mm;
+                            box-sizing: border-box; /* Ensure padding doesn't expand width */
+                        }
+                        .product-name {
+                            font-family: 'Courier New', monospace !important; /* Redundant but safe */
+                            font-size: 16px !important;
+                            font-weight: bold !important;
+                            margin-bottom: 3mm;
+                            text-transform: uppercase;
+                        }
+                        .date-info {
+                            font-family: 'Courier New', monospace !important; /* Redundant but safe */
+                            font-size: 12px !important;
+                            margin: 2mm 0;
+                            font-weight: bold !important;
+                        }
+                        @media print {
+                            .label {
+                                margin: 0;
+                                border: none;
+                                page-break-after: always;
+                                padding: 2mm;
+                            }
+                        }
                     </style>
                 </head>
                 <body>
