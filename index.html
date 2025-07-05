@@ -733,7 +733,7 @@
             min-height: 0; /* Crucial for flex children that need to scroll */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Contains its children, scrolling is delegated further down or handled if children are too big */
+            overflow: hidden; /* Explicitly hide overflow here, child elements will handle their own scroll */
         }
         .scroll-area > .category-view {
             /* This view might not need to scroll if categories are few. */
@@ -742,15 +742,17 @@
         .scroll-area > .products-view { /* This is #productsView */
             display: none; /* Controlled by JS */
             flex: 1; /* Takes all available space in .scroll-area when active */
-            flex-direction: column;
+            flex-direction: column; /* Stack header and product list */
             min-height: 0; /* Allows its children to scroll */
-            overflow: hidden; /* Important: productsView itself should not scroll, but its child productList */
+            overflow: hidden; /* Crucial: productsView itself should not scroll, its child #productsList should */
         }
         #productsList { /* The actual list of product items */
             flex-grow: 1; /* Takes all available space within #productsView (after .category-header) */
             overflow-y: auto; /* This is where the product items should scroll */
             min-height: 0; /* Necessary for flex item to scroll */
             padding-right: 0.5rem; /* Space for scrollbar */
+            /* Test with an explicit max-height to see if scrolling triggers */
+            /* max-height: 300px; */ /* You can uncomment this for testing if flex calculations fail */
         }
         .category-title { /* In main app product view */
             font-size: 1.3rem;
@@ -2194,6 +2196,13 @@
             const printButton = document.getElementById('printButton');
             const printText = document.getElementById('printText');
             if(!printButton || !printText) return;
+
+            // Explicitly make sure the button is visible.
+            // .button-base uses display: inline-flex or flex.
+            // The container of printButton is a flex item in a column flex container (.card)
+            // So, 'flex' or 'inline-flex' should be fine. 'block' might also work if it's full width.
+            // Let's stick to what .button-base implies.
+            printButton.style.display = 'inline-flex';
             
             if (selectedProduct) {
                 printButton.className = 'button-base button-primary print-button enabled';
